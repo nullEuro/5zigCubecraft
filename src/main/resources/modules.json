@@ -1,0 +1,19 @@
+{
+  "modules": [
+    {
+      "id": "cubecraft",
+      "name": "Cubecraft",
+      "items": [
+        {
+          "type": "cubecraftkit"
+        },
+        {
+          "type": "cubecraftvoters"
+        },
+        {
+          "type": "cubecraftchest"
+        }
+      ]
+    }
+  ]
+}
