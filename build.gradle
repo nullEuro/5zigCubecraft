@@ -2,6 +2,8 @@ import org.gradle.internal.os.OperatingSystem;
 
 apply plugin: 'java'
 
+version = "1.0.0"
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.14'
 }
