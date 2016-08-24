@@ -19,6 +19,10 @@ public class CubeCraftPlayerBuilder {
         return this;
     }
 
+    public boolean isTagsSet() {
+        return !(tags == null);
+    }
+
     public CubeCraftPlayerBuilder setInfo(NetworkPlayerInfo info) {
         this.info = info;
         return this;

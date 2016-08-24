@@ -6,10 +6,7 @@ import eu.the5zig.mod.util.NetworkPlayerInfo;
 import net.frozenbit.plugin5zig.cubecraft.*;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.SkywarsMode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 
@@ -61,6 +58,8 @@ public abstract class AbstractCubeCraftGameListener extends eu.the5zig.mod.serve
         List<CubeCraftPlayer> playerList = gameMode.getPlayers();
         playerList.clear();
         for (CubeCraftPlayerBuilder playerBuilder : playerBuilders.values()) {
+            if (!playerBuilder.isTagsSet())
+                playerBuilder.setTags(Collections.singletonList("Vanished"));
             playerList.add(playerBuilder.createCubeCraftPlayer());
         }
     }
