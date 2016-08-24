@@ -26,7 +26,7 @@ This is not an official plugin and I am not affiliated with Cubecraft or 5zig.
 
 ![5zig CubeCraft screenshot 1](https://raw.githubusercontent.com/nullEuro/5zigCubecraft/master/docs/screenshots/5zigCubecraft1.png)
 
-![5zig CubeCraft screenshot 2](https://raw.githubusercontent.com/nullEuro/5zigCubecraft/master/docs/screenshots/5zigCubecraft1.png)
+![5zig CubeCraft screenshot 2](https://raw.githubusercontent.com/nullEuro/5zigCubecraft/master/docs/screenshots/5zigCubecraft2.png)
 
 ## Installation
 
