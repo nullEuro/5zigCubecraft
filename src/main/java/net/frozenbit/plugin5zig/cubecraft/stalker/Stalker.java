@@ -39,6 +39,8 @@ public class Stalker {
             Main.getInstance().getLogger().println(String.format("Player %s is not in the player list", otherName));
             return;
         }
+        if (otherPlayer.getKills() == 0 && otherPlayer.getDeaths() == 0)
+            ++shownPlayerCount;
         if (kill)
             otherPlayer.onKill();
         else

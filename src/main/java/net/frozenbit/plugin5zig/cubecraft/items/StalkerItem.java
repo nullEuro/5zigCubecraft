@@ -65,7 +65,7 @@ public class StalkerItem extends GameModeItem<CubeCraftGameMode> {
     public int getHeight(boolean dummy) {
         if (dummy)
             return 50;
-        return 10 * (1 + Main.getInstance().getStalker().getStalkedPlayerList().size());
+        return 10 * (1 + Main.getInstance().getStalker().getShownPlayerCount());
     }
 
     @Override
@@ -80,6 +80,6 @@ public class StalkerItem extends GameModeItem<CubeCraftGameMode> {
 
     @Override
     public boolean shouldRender(boolean dummy) {
-        return dummy || The5zigAPI.getAPI().isPlayerListShown();
+        return super.shouldRender(dummy) && (dummy || The5zigAPI.getAPI().isPlayerListShown());
     }
 }
