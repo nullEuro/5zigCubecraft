@@ -8,10 +8,8 @@ import eu.the5zig.mod.event.UnloadEvent;
 import eu.the5zig.mod.modules.Category;
 import eu.the5zig.mod.plugin.Plugin;
 import eu.the5zig.mod.util.IKeybinding;
-import net.frozenbit.plugin5zig.cubecraft.items.ChestTypeItem;
-import net.frozenbit.plugin5zig.cubecraft.items.KitItem;
-import net.frozenbit.plugin5zig.cubecraft.items.SnakeItem;
-import net.frozenbit.plugin5zig.cubecraft.items.VoterCountItem;
+import net.frozenbit.plugin5zig.cubecraft.items.*;
+import net.frozenbit.plugin5zig.cubecraft.stalker.Stalker;
 import org.lwjgl.input.Keyboard;
 
 import java.io.FileWriter;
@@ -25,6 +23,8 @@ public class Main {
     private PrintWriter logger;
     private IKeybinding leaveKey, snakeKey;
     private boolean snake;
+
+    private Stalker stalker;
 
     public static Main getInstance() {
         return instance;
@@ -42,9 +42,12 @@ public class Main {
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftvoters", VoterCountItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftkit", KitItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftchest", ChestTypeItem.class, Category.SERVER_GENERAL);
+        The5zigAPI.getAPI().registerModuleItem(this, "stalker", StalkerItem.class, Category.SERVER_GENERAL);
 
         leaveKey = The5zigAPI.getAPI().registerKeyBiding("Leave the current game", Keyboard.KEY_L, "Cubecraft");
         snakeKey = The5zigAPI.getAPI().registerKeyBiding("Toggle Snake", Keyboard.KEY_P, "Misc");
+
+        stalker = new Stalker();
 
         instance = this;
     }
@@ -66,11 +69,16 @@ public class Main {
     @EventHandler
     public void onUnload(UnloadEvent event) {
         instance = null;
+        stalker.close();
         logger.close();
     }
 
     public boolean isSnake() {
         return snake;
+    }
+
+    public Stalker getStalker() {
+        return stalker;
     }
 
     public PrintWriter getLogger() {

@@ -25,7 +25,7 @@ public class VoterCountItem extends GameModeItem<CubeCraftGameMode> {
                 if (player.canVote()) {
                     ++voterCount;
                     ChestVote vote = getGameMode().getVote(player);
-                    The5zigAPI.getAPI().getRenderHelper().drawString(vote.color + player.name,
+                    The5zigAPI.getAPI().getRenderHelper().drawString(vote.color + player.getName(),
                             x, y + voterCount * 10);
                 }
             }

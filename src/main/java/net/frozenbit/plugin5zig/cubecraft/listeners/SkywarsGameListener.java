@@ -60,8 +60,12 @@ public class SkywarsGameListener extends AbstractCubeCraftGameListener {
                 gameMode.setChestType(chestType);
                 break;
             }
+            case "skywars.kill":
+                Main.getInstance().getStalker().onKill(match.get(0), match.get(1));
+                break;
             case "playerList":
                 updatePlayerList(gameMode, match);
+                Main.getInstance().getStalker().onPlayerListUpdate(gameMode.getPlayers());
                 break;
             case "welcome":
                 gameMode.setState(GameState.FINISHED);

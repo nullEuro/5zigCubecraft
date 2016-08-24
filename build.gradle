@@ -6,6 +6,12 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.14'
 }
 
+jar {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 repositories {
     jcenter()
 }
@@ -25,6 +31,8 @@ def minecraftLibraries = fileTree(dir: "$minecraftFolder/libraries", include: '*
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.13'
+    compile 'org.json:json:20160810'
+    compile 'org.iq80.leveldb:leveldb:0.9'
 
     compileOnly 'org.lwjgl.lwjgl:lwjgl:2.9.1'
     compileOnly fileTree(dir: 'libs', include: 'The-5zig-API-*.jar')

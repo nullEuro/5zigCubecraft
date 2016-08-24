@@ -19,7 +19,7 @@ public abstract class CubeCraftGameMode extends GameMode {
 
     public CubeCraftPlayer getPlayerByName(String name) {
         for (CubeCraftPlayer player : players) {
-            if (player.name.equals(name)) {
+            if (player.getName().equals(name)) {
                 return player;
             }
         }
