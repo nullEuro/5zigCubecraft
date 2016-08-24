@@ -42,7 +42,7 @@ public class Main {
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftvoters", VoterCountItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftkit", KitItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftchest", ChestTypeItem.class, Category.SERVER_GENERAL);
-        The5zigAPI.getAPI().registerModuleItem(this, "stalker", StalkerItem.class, Category.SERVER_GENERAL);
+        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftstalker", StalkerItem.class, Category.SERVER_GENERAL);
 
         leaveKey = The5zigAPI.getAPI().registerKeyBiding("Leave the current game", Keyboard.KEY_L, "Cubecraft");
         snakeKey = The5zigAPI.getAPI().registerKeyBiding("Toggle Snake", Keyboard.KEY_P, "Misc");
