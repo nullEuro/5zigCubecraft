@@ -4,13 +4,13 @@ import eu.the5zig.mod.The5zigAPI;
 import eu.the5zig.mod.server.IPatternResult;
 import eu.the5zig.mod.util.NetworkPlayerInfo;
 import net.frozenbit.plugin5zig.cubecraft.*;
-import net.frozenbit.plugin5zig.cubecraft.gamemodes.SkywarsMode;
+import net.frozenbit.plugin5zig.cubecraft.gamemodes.CubeCraftGameMode;
 
 import java.util.*;
 import java.util.regex.Pattern;
 
 
-public abstract class AbstractCubeCraftGameListener extends eu.the5zig.mod.server.AbstractGameListener<SkywarsMode> {
+public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode> extends eu.the5zig.mod.server.AbstractGameListener<T> {
     private static final Pattern RANK_PATTERN = Pattern.compile(":(\\w+):");
     private static final Pattern TAG_PATTERN = Pattern.compile("\\[(\\w+)\\]");
     private static final int PLAYER_LIST_COOLDOWN = 60;
@@ -18,7 +18,7 @@ public abstract class AbstractCubeCraftGameListener extends eu.the5zig.mod.serve
     private boolean requestPlayerList;
 
     @Override
-    public void onTick(SkywarsMode gameMode) {
+    public void onTick(CubeCraftGameMode gameMode) {
         if (cooldown > 0) {
             cooldown--;
             if (cooldown == 0 && requestPlayerList) {
@@ -27,7 +27,7 @@ public abstract class AbstractCubeCraftGameListener extends eu.the5zig.mod.serve
         }
     }
 
-    void updatePlayerList(SkywarsMode gameMode, IPatternResult match) {
+    void updatePlayerList(CubeCraftGameMode gameMode, IPatternResult match) {
         Map<String, CubeCraftPlayerBuilder> playerBuilders = new HashMap<>();
         for (NetworkPlayerInfo tabPlayer : The5zigAPI.getAPI().getServerPlayers())
             playerBuilders.put(tabPlayer.getGameProfile().getName(), new CubeCraftPlayerBuilder().setInfo(tabPlayer));

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 
-@Plugin(name = "Cubecraft Enhanced", version = "0.0")
+@Plugin(name = "5zigCubecraft", version = Build.version)
 public class Main {
     private static Main instance;
     private PrintWriter logger;
@@ -30,7 +30,7 @@ public class Main {
         return instance;
     }
 
-    // ideas: pre gamechat and game summary
+    // ideas: pre gamechat and game summary, friend join notification, no kit warning
 
     @EventHandler
     public void onLoad(LoadEvent loadEvent) throws IOException {
@@ -43,6 +43,7 @@ public class Main {
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftkit", KitItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftchest", ChestTypeItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftstalker", StalkerItem.class, Category.SERVER_GENERAL);
+        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftassassinationmoney", MoneyItem.class, Category.SERVER_GENERAL);
 
         leaveKey = The5zigAPI.getAPI().registerKeyBiding("Leave the current game", Keyboard.KEY_L, "Cubecraft");
         snakeKey = The5zigAPI.getAPI().registerKeyBiding("Toggle Snake", Keyboard.KEY_P, "Misc");

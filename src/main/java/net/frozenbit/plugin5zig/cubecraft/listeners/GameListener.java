@@ -29,10 +29,10 @@ public class GameListener extends AbstractGameListener<GameMode> {
         if (gameMode != null && gameMode.getState() != GameState.FINISHED) {
             return;
         }
-        switch (key) {
-            case "skywars.join":
-                countdown = 10;
-                break;
+        if (key.equals("skywars.join")) {
+            countdown = 10;
+        } else if (key.startsWith("assassination")) {
+            getGameListener().switchLobby("Assassination");
         }
     }
 

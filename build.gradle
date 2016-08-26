@@ -1,6 +1,7 @@
 import org.gradle.internal.os.OperatingSystem;
 
 apply plugin: 'java'
+apply plugin: 'idea'
 
 version = "1.0.0"
 
@@ -11,6 +12,31 @@ task wrapper(type: Wrapper) {
 jar {
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task generateSources {
+    def outputDir = file("$buildDir/generated-src")
+    outputs.dir outputDir
+    doFirst {
+        def srcFile = new File(outputDir, "net/frozenbit/plugin5zig/cubecraft/Build.java")
+        srcFile.parentFile.mkdirs()
+        srcFile.write("""
+            package net.frozenbit.plugin5zig.cubecraft;
+            public class Build {
+               public static final String version = "$project.version";
+            }
+            """)
+    }
+}
+
+compileJava.dependsOn generateSources
+compileJava.source generateSources.outputs.files, sourceSets.main.java
+//sourceSets.main.srcDirs += 'build/generated-src/'
+
+idea {
+    module {
+        sourceDirs += generateSources.outputs.files
     }
 }
 
@@ -32,13 +58,15 @@ if (OperatingSystem.current().isMacOsX()) {
 def minecraftLibraries = fileTree(dir: "$minecraftFolder/libraries", include: '**/*.jar')
 
 dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.13'
     compile 'org.json:json:20160810'
     compile 'org.iq80.leveldb:leveldb:0.9'
 
+    // the following dependencies are provided at runtime by minecraft
+    compileOnly 'org.apache.logging.log4j:log4j-api:2.0-rc2'
+    compileOnly 'com.google.guava:guava:17.0'
     compileOnly 'org.lwjgl.lwjgl:lwjgl:2.9.1'
-    compileOnly fileTree(dir: 'libs', include: 'The-5zig-API-*.jar')
     compileOnly minecraftLibraries.matching { include '**/authlib-1.5.22.jar' }
+    compileOnly fileTree(dir: 'libs', include: 'The-5zig-API-*.jar')
 
     testCompile 'junit:junit:4.12'
 }

@@ -9,7 +9,7 @@ import net.frozenbit.plugin5zig.cubecraft.Main;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.SkywarsMode;
 
 
-public class SkywarsGameListener extends AbstractCubeCraftGameListener {
+public class SkywarsGameListener extends AbstractCubeCraftGameListener<SkywarsMode> {
 
     @Override
     public Class<SkywarsMode> getGameMode() {
