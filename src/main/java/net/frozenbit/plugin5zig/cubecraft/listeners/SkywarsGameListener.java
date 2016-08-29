@@ -35,6 +35,7 @@ public class SkywarsGameListener extends AbstractCubeCraftGameListener<SkywarsMo
                 break;
             case "skywars.left":
                 gameMode.getPlayers().remove(gameMode.getPlayerByName(match.get(0)));
+                Main.getInstance().getStalker().onPlayerListUpdate(gameMode.getPlayers());
                 break;
             case "skywars.starting":
                 gameMode.setState(GameState.STARTING);

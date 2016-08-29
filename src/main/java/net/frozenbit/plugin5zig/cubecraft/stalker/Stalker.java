@@ -26,8 +26,7 @@ public class Stalker {
         boolean death = victim.equals(ownName);
         if (!kill && !death)
             return;
-        String otherName;
-        otherName = kill ? victim : killer;
+        String otherName = kill ? victim : killer;
         StalkedPlayer otherPlayer = null;
         for (StalkedPlayer player : stalkedPlayerList) {
             if (player.getName().equals(otherName)) {

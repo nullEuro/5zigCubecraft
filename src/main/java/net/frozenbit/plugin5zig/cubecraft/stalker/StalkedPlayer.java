@@ -51,11 +51,12 @@ public class StalkedPlayer {
     }
 
     public ChatColor getThreatColor() {
-        if (getThreat() > 0)
+        if (getThreat() <= 0)
+            return ChatColor.WHITE;
+        else if (getThreat() <= 3)
             return ChatColor.YELLOW;
-        else if (getThreat() > 3)
+        else
             return ChatColor.RED;
-        return ChatColor.WHITE;
     }
 
     public JSONObject toJSON() {

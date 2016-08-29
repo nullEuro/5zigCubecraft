@@ -13,10 +13,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 
@@ -48,7 +45,7 @@ public class Storage implements Closeable {
                 }
                 if (stalkedPlayerCache.size() > STALKED_PLAYER_CACHE_SIZE) {
                     List<NetworkPlayerInfo> currentPlayers = The5zigAPI.getAPI().getServerPlayers();
-                    Set<UUID> cachedPlayers = stalkedPlayerCache.keySet();
+                    Set<UUID> cachedPlayers = new HashSet<>(stalkedPlayerCache.keySet());
                     for (UUID cachedPlayer : cachedPlayers) {
                         boolean isCurrrentPlayer = false;
                         for (NetworkPlayerInfo currentPlayer : currentPlayers) {
@@ -70,7 +67,6 @@ public class Storage implements Closeable {
     }
 
     public void storePlayer(StalkedPlayer player) {
-        stalkedPlayerCache.put(player.getId(), player);
         try (DB db = factory.open(new File(DB_FILE), options)) {
             ByteBuffer key = ByteBuffer.allocate(16);
             key.putLong(player.getId().getMostSignificantBits());
