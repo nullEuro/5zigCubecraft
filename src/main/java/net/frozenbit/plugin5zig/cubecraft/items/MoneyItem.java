@@ -13,9 +13,10 @@ public class MoneyItem extends GameModeItem<AssassinationMode> {
 
     @Override
     protected Object getValue(boolean dummy) {
-        return The5zigAPI.getAPI().getItemCount("item.charcoal") +
-               5 * The5zigAPI.getAPI().getItemCount("item.goldNugget") +
-               10 * The5zigAPI.getAPI().getItemCount("item.ghastTear");
+        return dummy ? 547 :
+                (The5zigAPI.getAPI().getItemCount("item.charcoal") +
+                 5 * The5zigAPI.getAPI().getItemCount("item.goldNugget") +
+                 10 * The5zigAPI.getAPI().getItemCount("item.ghastTear"));
     }
 
     @Override
