@@ -3,7 +3,9 @@ import org.gradle.internal.os.OperatingSystem;
 apply plugin: 'java'
 apply plugin: 'idea'
 
-version = "1.0.0"
+def major = 1, minor = 0, patch = 1;
+
+version = "$major.$minor.$patch"
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.14'
@@ -11,11 +13,16 @@ task wrapper(type: Wrapper) {
 
 jar {
     from {
+        //noinspection GroovyAssignabilityCheck
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
+
 task generateSources {
+    // set this build.gradle as input, so the sources are regenerated when the version
+    // number is changed
+    inputs.file buildscript.sourceFile
     def outputDir = file("$buildDir/generated-src")
     outputs.dir outputDir
     doFirst {
@@ -24,7 +31,8 @@ task generateSources {
         srcFile.write("""
             package net.frozenbit.plugin5zig.cubecraft;
             public class Build {
-               public static final String version = "$project.version";
+                public static final int major = $major, minor = $minor, patch = $patch;
+                public static final String version = "$project.version";
             }
             """)
     }
@@ -62,6 +70,8 @@ dependencies {
     compile 'org.iq80.leveldb:leveldb:0.9'
 
     // the following dependencies are provided at runtime by minecraft
+    compileOnly 'org.apache.httpcomponents:httpclient:4.3.3'
+    compileOnly 'com.google.code.gson:gson:2.2.4'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.0-rc2'
     compileOnly 'com.google.guava:guava:17.0'
     compileOnly 'org.lwjgl.lwjgl:lwjgl:2.9.1'
