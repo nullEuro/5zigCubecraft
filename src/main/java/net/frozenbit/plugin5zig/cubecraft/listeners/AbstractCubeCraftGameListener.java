@@ -1,13 +1,18 @@
 package net.frozenbit.plugin5zig.cubecraft.listeners;
 
+import com.google.common.base.Splitter;
 import eu.the5zig.mod.The5zigAPI;
+import eu.the5zig.mod.server.GameState;
 import eu.the5zig.mod.server.IPatternResult;
 import eu.the5zig.mod.util.NetworkPlayerInfo;
+import eu.the5zig.util.minecraft.ChatColor;
 import net.frozenbit.plugin5zig.cubecraft.*;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.CubeCraftGameMode;
 
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static java.lang.String.format;
 
 
 public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode> extends eu.the5zig.mod.server.AbstractGameListener<T> {
@@ -16,6 +21,12 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
     private static final int PLAYER_LIST_COOLDOWN = 60;
     private int cooldown;
     private boolean requestPlayerList;
+    private String prefix;
+    private boolean summaryShown;
+
+    protected AbstractCubeCraftGameListener(String prefix) {
+        this.prefix = prefix;
+    }
 
     @Override
     public void onTick(CubeCraftGameMode gameMode) {
@@ -27,7 +38,78 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
         }
     }
 
-    void updatePlayerList(CubeCraftGameMode gameMode, IPatternResult match) {
+    @Override
+    public void onMatch(T gameMode, String key, IPatternResult match) {
+        Iterator<String> parts = Splitter.on('.').split(key).iterator();
+
+        String category = parts.next();
+        if (!category.equals("generic") && !category.equals(prefix)) {
+            return;
+        }
+
+        switch (parts.next()) {
+            case "join":
+                requestPlayerList();
+                break;
+            case "left":
+                gameMode.getPlayers().remove(gameMode.getPlayerByName(match.get(0)));
+                break;
+            case "starting":
+                gameMode.setState(GameState.STARTING);
+                break;
+            case "pregame":
+                gameMode.setState(GameState.PREGAME);
+                break;
+            case "start":
+                gameMode.setState(GameState.GAME);
+                gameMode.setTime(System.currentTimeMillis());
+                break;
+            case "countdown":
+                gameMode.setTime(System.currentTimeMillis() + 1000 * Integer.parseInt(match.get(0)));
+                break;
+            case "kit":
+                gameMode.setKit(match.get(0));
+                break;
+            case "kill": {
+                String ownName = The5zigAPI.getAPI().getGameProfile().getName();
+                if (match.get(1).equals(ownName)) {
+                    gameMode.setKills(gameMode.getKills() + 1);
+                }
+                break;
+            }
+            case "chestType": {
+                ChestVote chestType = ChestVote.fromString(match.get(0));
+                gameMode.setChestType(chestType);
+                break;
+            }
+            case "points":
+                gameMode.addPointsEarned(Integer.parseInt(match.get(0)));
+                break;
+            case "playerList":
+                updatePlayerList(gameMode, match);
+                break;
+            case "selfWin":
+            case "selfDeath": {
+                if (!summaryShown) {
+                    summaryShown = true;
+                    long gameTime = (System.currentTimeMillis() - gameMode.getTime()) / 1000;
+                    long minutes = gameTime / 60;
+                    long seconds = gameTime % 60;
+                    The5zigAPI.getAPI().messagePlayer(
+                            format("%sGame ended after %d:%02d! You killed %d players and earned %d points ",
+                                    ChatColor.GOLD, minutes, seconds, gameMode.getKills(),
+                                    gameMode.getPointsEarned()));
+                }
+                break;
+            }
+            case "welcome": {
+                gameMode.setState(GameState.FINISHED);
+                break;
+            }
+        }
+    }
+
+    protected void updatePlayerList(CubeCraftGameMode gameMode, IPatternResult match) {
         Map<String, CubeCraftPlayerBuilder> playerBuilders = new HashMap<>();
         for (NetworkPlayerInfo tabPlayer : The5zigAPI.getAPI().getServerPlayers())
             playerBuilders.put(tabPlayer.getGameProfile().getName(), new CubeCraftPlayerBuilder().setInfo(tabPlayer));
@@ -67,7 +149,7 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
     private void playerListCommand() {
         requestPlayerList = false;
         cooldown = PLAYER_LIST_COOLDOWN;
-        getGameListener().sendAndIgnore("/list", "playerList");
+        getGameListener().sendAndIgnore("/list", "generic.playerList");
     }
 
     protected void requestPlayerList() {

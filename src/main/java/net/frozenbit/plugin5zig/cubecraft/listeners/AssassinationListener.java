@@ -4,6 +4,10 @@ import net.frozenbit.plugin5zig.cubecraft.gamemodes.AssassinationMode;
 
 
 public class AssassinationListener extends AbstractCubeCraftGameListener<AssassinationMode> {
+    public AssassinationListener() {
+        super("assassination");
+    }
+
     @Override
     public Class<AssassinationMode> getGameMode() {
         return AssassinationMode.class;

@@ -4,6 +4,7 @@ package net.frozenbit.plugin5zig.cubecraft;
 import net.frozenbit.plugin5zig.cubecraft.listeners.AssassinationListener;
 import net.frozenbit.plugin5zig.cubecraft.listeners.GameListener;
 import net.frozenbit.plugin5zig.cubecraft.listeners.SkywarsGameListener;
+import net.frozenbit.plugin5zig.cubecraft.listeners.SurvivalGamesListener;
 
 public class ServerInstance extends eu.the5zig.mod.server.ServerInstance {
     @Override
@@ -11,6 +12,7 @@ public class ServerInstance extends eu.the5zig.mod.server.ServerInstance {
         getGameListener().registerListener(new GameListener());
         getGameListener().registerListener(new SkywarsGameListener());
         getGameListener().registerListener(new AssassinationListener());
+        getGameListener().registerListener(new SurvivalGamesListener());
     }
 
     @Override

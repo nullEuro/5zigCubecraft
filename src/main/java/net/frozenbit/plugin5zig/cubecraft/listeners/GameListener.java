@@ -22,16 +22,16 @@ public class GameListener extends AbstractGameListener<GameMode> {
 
     @Override
     public void onMatch(GameMode gameMode, String key, IPatternResult match) {
-        if (key.equals("welcome")) {
+        if (key.equals("generic.welcome")) {
             getGameListener().switchLobby(null);
             return;
         }
         if (gameMode != null && gameMode.getState() != GameState.FINISHED) {
             return;
         }
-        if (key.equals("skywars.join")) {
+        if (key.equals("generic.join")) {
             countdown = 10;
-        } else if (key.startsWith("assassination")) {
+        } else if (key.startsWith("assassination.")) {
             getGameListener().switchLobby("Assassination");
         }
     }

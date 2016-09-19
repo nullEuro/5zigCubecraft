@@ -16,6 +16,8 @@ public abstract class CubeCraftGameMode extends GameMode {
     private String kit;
     private boolean kitsEnabled;
     private ChestVote chestType = ChestVote.NONE;
+    private long chestTypeTime;
+    private int pointsEarned;
 
     public CubeCraftPlayer getPlayerByName(String name) {
         for (CubeCraftPlayer player : players) {
@@ -61,5 +63,18 @@ public abstract class CubeCraftGameMode extends GameMode {
 
     public void setChestType(ChestVote chestType) {
         this.chestType = chestType;
+        chestTypeTime = System.currentTimeMillis();
+    }
+
+    public long getChestTypeTime() {
+        return chestTypeTime;
+    }
+
+    public int getPointsEarned() {
+        return pointsEarned;
+    }
+
+    public void addPointsEarned(int pointsEarned) {
+        this.pointsEarned += pointsEarned;
     }
 }

@@ -1,7 +1,6 @@
 package net.frozenbit.plugin5zig.cubecraft.listeners;
 
 import eu.the5zig.mod.The5zigAPI;
-import eu.the5zig.mod.server.GameState;
 import eu.the5zig.mod.server.IPatternResult;
 import net.frozenbit.plugin5zig.cubecraft.ChestVote;
 import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
@@ -10,6 +9,10 @@ import net.frozenbit.plugin5zig.cubecraft.gamemodes.SkywarsMode;
 
 
 public class SkywarsGameListener extends AbstractCubeCraftGameListener<SkywarsMode> {
+
+    public SkywarsGameListener() {
+        super("skywars");
+    }
 
     @Override
     public Class<SkywarsMode> getGameMode() {
@@ -29,47 +32,22 @@ public class SkywarsGameListener extends AbstractCubeCraftGameListener<SkywarsMo
 
     @Override
     public void onMatch(SkywarsMode gameMode, String key, IPatternResult match) {
+        super.onMatch(gameMode, key, match);
         switch (key) {
-            case "skywars.join":
-                requestPlayerList();
-                break;
             case "skywars.left":
-                gameMode.getPlayers().remove(gameMode.getPlayerByName(match.get(0)));
                 Main.getInstance().getStalker().onPlayerListUpdate(gameMode.getPlayers());
                 break;
-            case "skywars.starting":
-                gameMode.setState(GameState.STARTING);
-                break;
-            case "skywars.countdown":
-                gameMode.setTime(System.currentTimeMillis() + 1000 * Integer.parseInt(match.get(0)));
-                break;
-            case "skywars.start":
-                gameMode.setState(GameState.GAME);
-                gameMode.setTime(System.currentTimeMillis());
-                break;
-            case "skywars.kit":
-                gameMode.setKit(match.get(0));
-                break;
-            case "skywars.chestvote": {
+            case "skywars.chestVote": {
                 CubeCraftPlayer player = gameMode.getPlayerByName(match.get(0));
                 ChestVote chestVote = ChestVote.fromString(match.get(1));
                 gameMode.getVotes().put(player, chestVote);
                 break;
             }
-            case "skywars.chestType": {
-                ChestVote chestType = ChestVote.fromString(match.get(0));
-                gameMode.setChestType(chestType);
-                break;
-            }
             case "skywars.kill":
                 Main.getInstance().getStalker().onKill(match.get(0), match.get(1));
                 break;
-            case "playerList":
-                updatePlayerList(gameMode, match);
+            case "generic.playerList":
                 Main.getInstance().getStalker().onPlayerListUpdate(gameMode.getPlayers());
-                break;
-            case "welcome":
-                gameMode.setState(GameState.FINISHED);
                 break;
         }
     }
