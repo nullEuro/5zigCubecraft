@@ -109,6 +109,11 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
         }
     }
 
+    @Override
+    public void onGameModeJoin(T gameMode) {
+        summaryShown = false;
+    }
+
     protected void updatePlayerList(CubeCraftGameMode gameMode, IPatternResult match) {
         Map<String, CubeCraftPlayerBuilder> playerBuilders = new HashMap<>();
         for (NetworkPlayerInfo tabPlayer : The5zigAPI.getAPI().getServerPlayers())
