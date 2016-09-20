@@ -26,6 +26,7 @@ public class SkywarsGameListener extends AbstractCubeCraftGameListener<SkywarsMo
 
     @Override
     public void onGameModeJoin(SkywarsMode gameMode) {
+        super.onGameModeJoin(gameMode);
         gameMode.setKitsEnabled(The5zigAPI.getAPI().getItemCount("item.paper") == 1);
         requestPlayerList();
     }

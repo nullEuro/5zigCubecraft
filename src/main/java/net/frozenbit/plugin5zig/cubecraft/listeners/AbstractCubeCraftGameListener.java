@@ -14,7 +14,12 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 
-
+/**
+ * Abstract base class for games on CubeCraft. Handles player list changes and common game state changes.
+ * All listener methods (<code>on*</code>) need to call super.
+ *
+ * @param <T> GameMode class the listener handles
+ */
 public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode> extends eu.the5zig.mod.server.AbstractGameListener<T> {
     private static final Pattern RANK_PATTERN = Pattern.compile(":(\\w+):");
     private static final Pattern TAG_PATTERN = Pattern.compile("\\[(\\w+)\\]");
@@ -112,6 +117,7 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
     @Override
     public void onGameModeJoin(T gameMode) {
         summaryShown = false;
+        Main.getInstance().getLogger().println("gamemode joined!");
     }
 
     protected void updatePlayerList(CubeCraftGameMode gameMode, IPatternResult match) {

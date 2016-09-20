@@ -34,6 +34,7 @@ public class SurvivalGamesListener extends AbstractCubeCraftGameListener<Surviva
 
     @Override
     public void onGameModeJoin(SurvivalGamesMode gameMode) {
+        super.onGameModeJoin(gameMode);
         gameMode.setKitsEnabled(true);
     }
 
