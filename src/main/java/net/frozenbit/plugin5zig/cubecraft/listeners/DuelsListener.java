@@ -22,23 +22,17 @@ public class DuelsListener extends AbstractCubeCraftGameListener<DuelsGameMode> 
 
     @Override
     public void onMatch(DuelsGameMode gameMode, String key, IPatternResult match) {
+        super.onMatch(gameMode, key, match);
         switch (key) {
             case "duels.starting":
-                gameMode.setState(GameState.STARTING);
                 updateOpponentInfo(gameMode);
-                break;
-            case "duels.countdown":
-                gameMode.setTime(System.currentTimeMillis() + 1000 * Integer.parseInt(match.get(0)));
-                break;
-            case "duels.start":
-                gameMode.setState(GameState.GAME);
-                gameMode.setTime(System.currentTimeMillis());
                 break;
         }
     }
 
     @Override
     public void onTick(DuelsGameMode gameMode) {
+        super.onTick(gameMode);
         if (gameMode.getState() != GameState.LOBBY) {
             timer++;
             if (timer % OPPONENT_UPDATE_INTERVAL == 0) {
@@ -59,6 +53,7 @@ public class DuelsListener extends AbstractCubeCraftGameListener<DuelsGameMode> 
 
     @Override
     public void onGameModeJoin(DuelsGameMode gameMode) {
+        super.onGameModeJoin(gameMode);
         timer = 0;
     }
 
