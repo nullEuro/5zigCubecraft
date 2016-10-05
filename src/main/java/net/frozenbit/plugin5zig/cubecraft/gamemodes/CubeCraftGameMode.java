@@ -2,6 +2,7 @@ package net.frozenbit.plugin5zig.cubecraft.gamemodes;
 
 import eu.the5zig.mod.server.GameMode;
 import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
+import net.frozenbit.plugin5zig.cubecraft.stalker.Stalker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,4 +50,6 @@ public abstract class CubeCraftGameMode extends GameMode {
     public void addPointsEarned(int pointsEarned) {
         this.pointsEarned += pointsEarned;
     }
+
+    public abstract Stalker getStalker();
 }

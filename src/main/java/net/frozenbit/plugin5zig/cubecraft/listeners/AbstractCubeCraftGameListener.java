@@ -58,6 +58,7 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
                 break;
             case "left":
                 gameMode.getPlayers().remove(gameMode.getPlayerByName(match.get(0)));
+                gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
                 break;
             case "starting":
                 gameMode.setState(GameState.STARTING);
@@ -80,6 +81,7 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
                 if (match.get(1).equals(ownName)) {
                     gameMode.setKills(gameMode.getKills() + 1);
                 }
+                gameMode.getStalker().onKill(match.get(0), match.get(1));
                 break;
             }
             case "points":
@@ -87,6 +89,7 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
                 break;
             case "playerList":
                 updatePlayerList(gameMode, match);
+                gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
                 break;
             case "selfWin":
             case "selfDeath": {

@@ -9,6 +9,7 @@ import net.frozenbit.plugin5zig.cubecraft.gamemodes.DuelsGameMode;
 
 public class DuelsListener extends AbstractCubeCraftGameListener<DuelsGameMode> {
     public static final int OPPONENT_UPDATE_INTERVAL = 10;
+    public static final int PLAYERLIST_DELAY = 20;
     private long timer;
 
     public DuelsListener() {
@@ -37,6 +38,9 @@ public class DuelsListener extends AbstractCubeCraftGameListener<DuelsGameMode> 
             timer++;
             if (timer % OPPONENT_UPDATE_INTERVAL == 0) {
                 updateOpponentInfo(gameMode);
+            }
+            if (timer == PLAYERLIST_DELAY) {
+                requestPlayerList();
             }
         }
     }

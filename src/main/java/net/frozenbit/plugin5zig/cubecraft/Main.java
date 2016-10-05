@@ -18,6 +18,8 @@ import net.frozenbit.plugin5zig.cubecraft.updater.Updater;
 import org.lwjgl.input.Keyboard;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -25,7 +27,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Plugin(name = "5zigCubecraft", version = Build.version)
 public class Main {
     private static final String LOG_FILE = "cubecraft_5ziglog.txt";
-    private static final String CONFIG_FILE = "./the5zigmod/plugins/5zigCubecraft/config.json";
+    public static final Path PLUGIN_PATH = Paths.get("the5zigmod/plugins/5zigCubecraft/");
     private static Main instance;
 
     private IKeybinding leaveKey, snakeKey;
@@ -33,7 +35,6 @@ public class Main {
     private Queue<Runnable> tasks = new ConcurrentLinkedQueue<>();
 
     private PrintWriter logger;
-    private Stalker stalker;
     private Updater updater;
     private PluginConfig config;
 
@@ -60,7 +61,7 @@ public class Main {
 
     private static PluginConfig readPluginConfig() {
         try {
-            File configFile = new File(CONFIG_FILE);
+            File configFile = PLUGIN_PATH.resolve("config.json").toFile();
             PluginConfig config;
             if (!configFile.exists()) {
                 config = new PluginConfig();
@@ -100,12 +101,34 @@ public class Main {
         leaveKey = The5zigAPI.getAPI().registerKeyBiding("Leave the current game", Keyboard.KEY_L, "Cubecraft");
         snakeKey = The5zigAPI.getAPI().registerKeyBiding("Toggle Snake", Keyboard.KEY_P, "Misc");
 
-        stalker = new Stalker();
-
         if (config.hasAutoUpdatesEnabled()) {
             updater = new Updater(this);
             updater.start();
         }
+
+        // copy the old skywars database - REMOVE THIS SOME TIME IN THE FUTURE!
+        {
+            File source = new File("stalker.db");
+            File target = PLUGIN_PATH.resolve("stalker/Skywars.db").toFile();
+            if (source.isDirectory() && !target.isDirectory()) {
+                File[] db_files = source.listFiles();
+                if (db_files == null) {
+                    getLogger().println("old skywars stalker.db exists but can not be read");
+                    return;
+                }
+                try {
+                    target.mkdirs();
+                    for (File file : db_files) {
+                        Files.copy(file, new File(target, file.getName()));
+                    }
+                } catch (IOException e) {
+                    getLogger().println(e);
+                }
+            } else {
+                getLogger().println(String.format("%s: %s; %s: %s", source.getAbsolutePath(), source.isDirectory(), target.getAbsolutePath(), target.isDirectory()));
+            }
+        }
+        // REMOVE UNTIL THIS LINE!
 
         instance = this;
     }
@@ -131,7 +154,6 @@ public class Main {
     @EventHandler
     public void onUnload(UnloadEvent event) {
         instance = null;
-        stalker.close();
         logger.close();
         if (updater != null) {
             updater.stop();
@@ -140,10 +162,6 @@ public class Main {
 
     public boolean isSnake() {
         return snake;
-    }
-
-    public Stalker getStalker() {
-        return stalker;
     }
 
     public PrintWriter getLogger() {

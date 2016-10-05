@@ -1,6 +1,8 @@
 package net.frozenbit.plugin5zig.cubecraft.stalker;
 
 import eu.the5zig.mod.The5zigAPI;
+import eu.the5zig.mod.modules.StringItem;
+import eu.the5zig.mod.server.GameMode;
 import eu.the5zig.mod.util.NetworkPlayerInfo;
 import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
 import net.frozenbit.plugin5zig.cubecraft.Main;
@@ -19,12 +21,13 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 
 public class Storage implements Closeable {
 
-    private final static String DB_FILE = "stalker.db";
     private final static int STALKED_PLAYER_CACHE_SIZE = 200;
+    private File db_file;
     private Options options;
     private HashMap<UUID, StalkedPlayer> stalkedPlayerCache;
 
-    public Storage() {
+    public Storage(GameMode gameMode) {
+        db_file = Main.PLUGIN_PATH.resolve(String.format("stalker/%s.db", gameMode.getName())).toFile();
         options = new Options();
         options.createIfMissing(true);
         stalkedPlayerCache = new HashMap<>();
@@ -33,7 +36,7 @@ public class Storage implements Closeable {
     public StalkedPlayer getStalkedPlayer(CubeCraftPlayer player) {
         StalkedPlayer stalkedPlayer = stalkedPlayerCache.get(player.getId());
         if (stalkedPlayer == null) {
-            try (DB db = factory.open(new File(DB_FILE), options)) {
+            try (DB db = factory.open(db_file, options)) {
                 ByteBuffer key = ByteBuffer.allocate(16);
                 key.putLong(player.getId().getMostSignificantBits());
                 key.putLong(player.getId().getLeastSignificantBits());
@@ -67,7 +70,7 @@ public class Storage implements Closeable {
     }
 
     public void storePlayer(StalkedPlayer player) {
-        try (DB db = factory.open(new File(DB_FILE), options)) {
+        try (DB db = factory.open(db_file, options)) {
             ByteBuffer key = ByteBuffer.allocate(16);
             key.putLong(player.getId().getMostSignificantBits());
             key.putLong(player.getId().getLeastSignificantBits());

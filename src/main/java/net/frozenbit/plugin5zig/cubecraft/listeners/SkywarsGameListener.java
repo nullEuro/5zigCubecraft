@@ -35,9 +35,6 @@ public class SkywarsGameListener extends AbstractCubeCraftGameListener<SkywarsMo
     public void onMatch(SkywarsMode gameMode, String key, IPatternResult match) {
         super.onMatch(gameMode, key, match);
         switch (key) {
-            case "skywars.left":
-                Main.getInstance().getStalker().onPlayerListUpdate(gameMode.getPlayers());
-                break;
             case "skywars.chestType": {
                 ChestVote chestType = ChestVote.fromString(match.get(0));
                 gameMode.setChestType(chestType);
@@ -49,12 +46,6 @@ public class SkywarsGameListener extends AbstractCubeCraftGameListener<SkywarsMo
                 gameMode.getVotes().put(player, chestVote);
                 break;
             }
-            case "skywars.kill":
-                Main.getInstance().getStalker().onKill(match.get(0), match.get(1));
-                break;
-            case "generic.playerList":
-                Main.getInstance().getStalker().onPlayerListUpdate(gameMode.getPlayers());
-                break;
         }
     }
 

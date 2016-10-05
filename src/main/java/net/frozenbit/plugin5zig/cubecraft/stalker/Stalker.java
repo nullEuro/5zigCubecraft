@@ -1,6 +1,7 @@
 package net.frozenbit.plugin5zig.cubecraft.stalker;
 
 import eu.the5zig.mod.The5zigAPI;
+import eu.the5zig.mod.server.GameMode;
 import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
 import net.frozenbit.plugin5zig.cubecraft.Main;
 
@@ -11,12 +12,14 @@ public class Stalker {
 
     private Storage storage;
     private String ownName;
+    private GameMode gameMode;
     private List<StalkedPlayer> stalkedPlayerList;
     private int maxNameWidth = 0;
     private int shownPlayerCount = 0;
 
-    public Stalker() {
-        storage = new Storage();
+    public Stalker(GameMode gameMode) {
+        this.gameMode = gameMode;
+        storage = new Storage(gameMode);
         ownName = The5zigAPI.getAPI().getGameProfile().getName();
         stalkedPlayerList = new ArrayList<>();
     }

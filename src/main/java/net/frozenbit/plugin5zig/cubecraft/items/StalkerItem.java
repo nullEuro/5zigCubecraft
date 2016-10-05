@@ -20,14 +20,14 @@ public class StalkerItem extends GameModeItem<CubeCraftGameMode> {
     private int widthName;
 
     public StalkerItem() {
-        super(SkywarsMode.class);
+        super(CubeCraftGameMode.class);
     }
 
     @Override
     public void render(int x, int y, RenderLocation renderLocation, boolean dummy) {
-        widthName = Math.max(minWidthName, Main.getInstance().getStalker().getMaxNameWidth() + 20);
-        List<StalkedPlayer> stalkedPlayers = Main.getInstance().getStalker().getStalkedPlayerList();
-        if (Main.getInstance().getStalker().getShownPlayerCount() == 0 && !dummy)
+        widthName = Math.max(minWidthName, getGameMode().getStalker().getMaxNameWidth() + 20);
+        List<StalkedPlayer> stalkedPlayers = getGameMode().getStalker().getStalkedPlayerList();
+        if (getGameMode().getStalker().getShownPlayerCount() == 0 && !dummy)
             return;
         The5zigAPI.getAPI().getRenderHelper().drawString(ChatColor.UNDERLINE + "Name", x, y);
         The5zigAPI.getAPI().getRenderHelper().drawString(ChatColor.UNDERLINE + "Kills", x + widthName, y);
@@ -57,7 +57,7 @@ public class StalkerItem extends GameModeItem<CubeCraftGameMode> {
     public int getWidth(boolean dummy) {
         if (dummy)
             return 190;
-        widthName = Math.max(minWidthName, Main.getInstance().getStalker().getMaxNameWidth() + 20);
+        widthName = Math.max(minWidthName, getGameMode().getStalker().getMaxNameWidth() + 20);
         return widthName + widthKills + widthDeaths;
     }
 
@@ -65,7 +65,7 @@ public class StalkerItem extends GameModeItem<CubeCraftGameMode> {
     public int getHeight(boolean dummy) {
         if (dummy)
             return 50;
-        return 10 * (1 + Main.getInstance().getStalker().getShownPlayerCount());
+        return 10 * (1 + getGameMode().getStalker().getShownPlayerCount());
     }
 
     @Override
