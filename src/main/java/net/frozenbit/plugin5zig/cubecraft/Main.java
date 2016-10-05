@@ -61,18 +61,21 @@ public class Main {
     private static PluginConfig readPluginConfig() {
         try {
             File configFile = new File(CONFIG_FILE);
+            PluginConfig config;
             if (!configFile.exists()) {
+                config = new PluginConfig();
                 Files.createParentDirs(configFile);
-                try (FileWriter writer = new FileWriter(configFile)) {
-                    Gson gson = new GsonBuilder()
-                            .setPrettyPrinting()
-                            .create();
-                    PluginConfig config = new PluginConfig();
-                    gson.toJson(config, writer);
-                    return config;
-                }
+            } else {
+                Gson gson = new Gson();
+                config = gson.fromJson(new FileReader(configFile), PluginConfig.class);
             }
-            return new Gson().fromJson(new FileReader(configFile), PluginConfig.class);
+            try (FileWriter writer = new FileWriter(configFile)) {
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting()
+                        .create();
+                gson.toJson(config, writer);
+            }
+            return config;
         } catch (IOException e) {
             The5zigAPI.getLogger().warn("Cannot create or read config file, assuming defaults", e);
             return new PluginConfig();
@@ -92,6 +95,7 @@ public class Main {
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftchest", ChestTypeItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftstalker", StalkerItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftassassinationmoney", MoneyItem.class, Category.SERVER_GENERAL);
+        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftduelsopponent", OpponentItem.class, Category.SERVER_GENERAL);
 
         leaveKey = The5zigAPI.getAPI().registerKeyBiding("Leave the current game", Keyboard.KEY_L, "Cubecraft");
         snakeKey = The5zigAPI.getAPI().registerKeyBiding("Toggle Snake", Keyboard.KEY_P, "Misc");
