@@ -21,7 +21,7 @@ public class SurvivalGamesListener extends AbstractCubeCraftGameListener<Surviva
         switch (key) {
             case "sg.chestType": {
                 gameMode.setState(GameState.STARTING);
-                gameMode.setTime(System.currentTimeMillis() + 1000 * 20);
+                gameMode.setTime(System.currentTimeMillis() + 1000 * 22);
                 break;
             }
             case "sg.pregame": {
