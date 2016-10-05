@@ -38,6 +38,11 @@ public class SkywarsGameListener extends AbstractCubeCraftGameListener<SkywarsMo
             case "skywars.left":
                 Main.getInstance().getStalker().onPlayerListUpdate(gameMode.getPlayers());
                 break;
+            case "skywars.chestType": {
+                ChestVote chestType = ChestVote.fromString(match.get(0));
+                gameMode.setChestType(chestType);
+                break;
+            }
             case "skywars.chestVote": {
                 CubeCraftPlayer player = gameMode.getPlayerByName(match.get(0));
                 ChestVote chestVote = ChestVote.fromString(match.get(1));

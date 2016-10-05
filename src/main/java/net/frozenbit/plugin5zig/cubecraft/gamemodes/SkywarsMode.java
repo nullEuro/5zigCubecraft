@@ -1,6 +1,6 @@
 package net.frozenbit.plugin5zig.cubecraft.gamemodes;
 
-public class SkywarsMode extends CubeCraftGameMode {
+public class SkywarsMode extends VotableCubeCraftGameMode {
 
     public SkywarsMode() {
         super();

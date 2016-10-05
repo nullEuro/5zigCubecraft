@@ -1,16 +1,19 @@
 package net.frozenbit.plugin5zig.cubecraft.listeners;
 
 import eu.the5zig.mod.The5zigAPI;
-import eu.the5zig.mod.server.AbstractGameListener;
 import eu.the5zig.mod.server.GameState;
 import eu.the5zig.mod.server.IPatternResult;
 import eu.the5zig.mod.util.NetworkPlayerInfo;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.DuelsGameMode;
 
 
-public class DuelsListener extends AbstractGameListener<DuelsGameMode> {
+public class DuelsListener extends AbstractCubeCraftGameListener<DuelsGameMode> {
     public static final int OPPONENT_UPDATE_INTERVAL = 10;
     private long timer;
+
+    public DuelsListener() {
+        super("duels");
+    }
 
     @Override
     public Class<DuelsGameMode> getGameMode() {

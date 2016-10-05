@@ -82,11 +82,6 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
                 }
                 break;
             }
-            case "chestType": {
-                ChestVote chestType = ChestVote.fromString(match.get(0));
-                gameMode.setChestType(chestType);
-                break;
-            }
             case "points":
                 gameMode.addPointsEarned(Integer.parseInt(match.get(0)));
                 break;

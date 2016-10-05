@@ -6,14 +6,13 @@ import eu.the5zig.mod.modules.GameModeItem;
 import eu.the5zig.mod.render.RenderLocation;
 import net.frozenbit.plugin5zig.cubecraft.ChestVote;
 import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
-import net.frozenbit.plugin5zig.cubecraft.gamemodes.CubeCraftGameMode;
-import net.frozenbit.plugin5zig.cubecraft.gamemodes.SkywarsMode;
+import net.frozenbit.plugin5zig.cubecraft.gamemodes.VotableCubeCraftGameMode;
 
-public class VoterCountItem extends GameModeItem<CubeCraftGameMode> {
+public class VoterCountItem extends GameModeItem<VotableCubeCraftGameMode> {
     private int voterCount;
 
     public VoterCountItem() {
-        super(SkywarsMode.class);
+        super(VotableCubeCraftGameMode.class);
     }
 
     @Override

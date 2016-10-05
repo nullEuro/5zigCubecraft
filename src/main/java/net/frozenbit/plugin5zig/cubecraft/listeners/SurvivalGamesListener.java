@@ -2,6 +2,7 @@ package net.frozenbit.plugin5zig.cubecraft.listeners;
 
 import eu.the5zig.mod.server.GameState;
 import eu.the5zig.mod.server.IPatternResult;
+import net.frozenbit.plugin5zig.cubecraft.ChestVote;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.SurvivalGamesMode;
 
 
@@ -22,6 +23,8 @@ public class SurvivalGamesListener extends AbstractCubeCraftGameListener<Surviva
             case "sg.chestType": {
                 gameMode.setState(GameState.STARTING);
                 gameMode.setTime(System.currentTimeMillis() + 1000 * 22);
+                ChestVote chestType = ChestVote.fromString(match.get(0));
+                gameMode.setChestType(chestType);
                 break;
             }
             case "sg.pregame": {

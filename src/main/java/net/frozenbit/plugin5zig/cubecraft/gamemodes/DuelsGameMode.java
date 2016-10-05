@@ -1,10 +1,9 @@
 package net.frozenbit.plugin5zig.cubecraft.gamemodes;
 
-import eu.the5zig.mod.server.GameMode;
 import eu.the5zig.mod.util.NetworkPlayerInfo;
 
 
-public class DuelsGameMode extends GameMode {
+public class DuelsGameMode extends CubeCraftGameMode {
     private NetworkPlayerInfo opponentInfo;
 
     @Override

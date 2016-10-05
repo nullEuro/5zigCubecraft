@@ -5,12 +5,12 @@ import eu.the5zig.mod.The5zigAPI;
 import eu.the5zig.mod.modules.GameModeItem;
 import eu.the5zig.mod.render.RenderLocation;
 import net.frozenbit.plugin5zig.cubecraft.ChestVote;
-import net.frozenbit.plugin5zig.cubecraft.gamemodes.CubeCraftGameMode;
+import net.frozenbit.plugin5zig.cubecraft.gamemodes.VotableCubeCraftGameMode;
 
-public class ChestTypeItem extends GameModeItem<CubeCraftGameMode> {
+public class ChestTypeItem extends GameModeItem<VotableCubeCraftGameMode> {
 
     public ChestTypeItem() {
-        super(CubeCraftGameMode.class);
+        super(VotableCubeCraftGameMode.class);
     }
 
     @Override
