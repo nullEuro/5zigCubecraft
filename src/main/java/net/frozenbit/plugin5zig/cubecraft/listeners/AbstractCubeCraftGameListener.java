@@ -115,6 +115,8 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
     @Override
     public void onGameModeJoin(T gameMode) {
         summaryShown = false;
+        gameMode.getPlayers().clear();
+        gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
         Main.getInstance().getLogger().println("gamemode joined!");
     }
 
