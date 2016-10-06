@@ -7,6 +7,7 @@ import net.frozenbit.plugin5zig.cubecraft.Main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Stalker {
 
@@ -65,6 +66,15 @@ public class Stalker {
 
     public List<StalkedPlayer> getStalkedPlayerList() {
         return stalkedPlayerList;
+    }
+
+    public StalkedPlayer getStalkedPlayerById(UUID id) {
+        for (StalkedPlayer stalkedPlayer : stalkedPlayerList) {
+            if (stalkedPlayer.getId().equals(id)) {
+                return stalkedPlayer;
+            }
+        }
+        return null;
     }
 
     public int getMaxNameWidth() {

@@ -1,15 +1,26 @@
 package net.frozenbit.plugin5zig.cubecraft.items;
 
+import eu.the5zig.mod.The5zigAPI;
 import eu.the5zig.mod.modules.GameModeItem;
+import eu.the5zig.mod.render.RenderLocation;
 import eu.the5zig.mod.util.NetworkPlayerInfo;
 import eu.the5zig.util.minecraft.ChatColor;
+import net.frozenbit.plugin5zig.cubecraft.ChestVote;
+import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
+import net.frozenbit.plugin5zig.cubecraft.Main;
+import net.frozenbit.plugin5zig.cubecraft.Rank;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.DuelsGameMode;
+import net.frozenbit.plugin5zig.cubecraft.stalker.StalkedPlayer;
+
+import java.util.Collections;
+import java.util.List;
 
 import static java.lang.String.format;
 
 
 public class OpponentItem extends GameModeItem<DuelsGameMode> {
     private int dummyPing;
+    private int lines = 1;
     private long lastDummyPingTime;
 
     public OpponentItem() {
@@ -27,23 +38,54 @@ public class OpponentItem extends GameModeItem<DuelsGameMode> {
     }
 
     @Override
-    protected Object getValue(boolean dummy) {
+    public void render(int x, int y, RenderLocation renderLocation, boolean dummy) {
         if (dummy) {
             if (System.currentTimeMillis() - lastDummyPingTime > 1000) {
                 lastDummyPingTime = System.currentTimeMillis();
                 dummyPing = (int) (Math.random() * 500.0);
             }
-            return formatOpponentInfo("nullEuro", dummyPing);
+            The5zigAPI.getAPI().getRenderHelper().drawString(formatOpponentInfo("nullEuro", dummyPing), x, y);
+            The5zigAPI.getAPI().getRenderHelper().drawString(formatOpponentStats(3, 7), x, y + 10);
+            lines = 2;
+            return;
         }
         NetworkPlayerInfo opponentInfo = getGameMode().getOpponentInfo();
         if (opponentInfo == null) {
-            return ChatColor.GRAY + "...";
+            The5zigAPI.getAPI().getRenderHelper().drawString(ChatColor.GRAY + "...", x, y);
+            lines = 1;
+            return;
         }
-        return formatOpponentInfo(opponentInfo.getGameProfile().getName(), opponentInfo.getPing());
+        The5zigAPI.getAPI().getRenderHelper().drawString(formatOpponentInfo(opponentInfo.getGameProfile().getName(), opponentInfo.getPing()), x, y);
+        StalkedPlayer stalkedOpponent = getGameMode().getStalker().getStalkedPlayerById(opponentInfo.getGameProfile().getId());
+        if (stalkedOpponent != null) {
+            The5zigAPI.getAPI().getRenderHelper().drawString(formatOpponentStats(stalkedOpponent.getKills(), stalkedOpponent.getDeaths()), x, y + 10);
+            lines = 2;
+        } else {
+            lines = 1;
+        }
     }
 
     private String formatOpponentInfo(String name, int ping) {
-        return format("%s (%s)", name, getColoredPing(ping));
+        return format("%s%s (%s)", getPrefix(), name, getColoredPing(ping));
+    }
+
+    private String formatOpponentStats(int kills, int deaths) {
+        return format("%d kills, %d deaths", kills, deaths);
+    }
+
+    @Override
+    protected Object getValue(boolean dummy) {
+        return "";
+    }
+
+    @Override
+    public int getWidth(boolean dummy) {
+        return 50;
+    }
+
+    @Override
+    public int getHeight(boolean dummy) {
+        return lines * 10;
     }
 
     @Override

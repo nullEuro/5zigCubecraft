@@ -107,30 +107,29 @@ public class Main {
         }
 
         // copy the old skywars database - REMOVE THIS SOME TIME IN THE FUTURE!
-        {
-            File source = new File("stalker.db");
-            File target = PLUGIN_PATH.resolve("stalker/Skywars.db").toFile();
-            if (source.isDirectory() && !target.isDirectory()) {
-                File[] db_files = source.listFiles();
-                if (db_files == null) {
-                    getLogger().println("old skywars stalker.db exists but can not be read");
-                    return;
-                }
-                try {
-                    target.mkdirs();
-                    for (File file : db_files) {
-                        Files.copy(file, new File(target, file.getName()));
-                    }
-                } catch (IOException e) {
-                    getLogger().println(e);
-                }
-            } else {
-                getLogger().println(String.format("%s: %s; %s: %s", source.getAbsolutePath(), source.isDirectory(), target.getAbsolutePath(), target.isDirectory()));
-            }
-        }
-        // REMOVE UNTIL THIS LINE!
+        migrateSkywarsDb();
 
         instance = this;
+    }
+
+    private void migrateSkywarsDb() {
+        File source = new File("stalker.db");
+        File target = PLUGIN_PATH.resolve("stalker/Skywars.db").toFile();
+        if (source.isDirectory() && !target.isDirectory()) {
+            File[] db_files = source.listFiles();
+            if (db_files == null) {
+                getLogger().println("old skywars stalker.db exists but can not be read");
+                return;
+            }
+            try {
+                target.mkdirs();
+                for (File file : db_files) {
+                    Files.copy(file, new File(target, file.getName()));
+                }
+            } catch (IOException e) {
+                getLogger().println(e);
+            }
+        }
     }
 
     @EventHandler
