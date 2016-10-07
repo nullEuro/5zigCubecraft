@@ -11,6 +11,7 @@ public class ServerInstance extends eu.the5zig.mod.server.ServerInstance {
         getGameListener().registerListener(new AssassinationListener());
         getGameListener().registerListener(new SurvivalGamesListener());
         getGameListener().registerListener(new DuelsListener());
+        getGameListener().registerListener(new EggWarsListener());
     }
 
     @Override
