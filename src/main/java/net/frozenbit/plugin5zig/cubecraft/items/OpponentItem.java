@@ -5,15 +5,8 @@ import eu.the5zig.mod.modules.GameModeItem;
 import eu.the5zig.mod.render.RenderLocation;
 import eu.the5zig.mod.util.NetworkPlayerInfo;
 import eu.the5zig.util.minecraft.ChatColor;
-import net.frozenbit.plugin5zig.cubecraft.ChestVote;
-import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
-import net.frozenbit.plugin5zig.cubecraft.Main;
-import net.frozenbit.plugin5zig.cubecraft.Rank;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.DuelsGameMode;
 import net.frozenbit.plugin5zig.cubecraft.stalker.StalkedPlayer;
-
-import java.util.Collections;
-import java.util.List;
 
 import static java.lang.String.format;
 

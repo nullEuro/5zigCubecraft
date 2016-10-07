@@ -14,20 +14,23 @@ public class CubeCraftPlayer {
     private NetworkPlayerInfo info;
 
     public CubeCraftPlayer(Rank rank, List<String> tags, NetworkPlayerInfo info) {
-        if (tags == null || info == null)
-            throw new IllegalArgumentException("CubecraftPlayer doesn't want null :(");
+        if (rank == null || tags == null || info == null)
+            throw new IllegalArgumentException("rank, tags and info must not be null");
         this.rank = rank;
         this.tags = tags;
         this.info = info;
     }
 
-    public boolean canVote() {
-        return rank != null && Rank.DIAMOND.compareTo(rank) <= 0
-                || tags.contains("Mod")
-                || tags.contains("SrMod")
-                || tags.contains("Dev")
-                || tags.contains("Admin")
-                || tags.contains("Vanished");
+    public boolean isStaff() {
+        return tags.contains("Mod")
+               || tags.contains("SrMod")
+               || tags.contains("Dev")
+               || tags.contains("Admin")
+               || tags.contains("Vanished");
+    }
+
+    public Rank getRank() {
+        return rank;
     }
 
     public String getName() {

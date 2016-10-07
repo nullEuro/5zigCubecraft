@@ -2,11 +2,12 @@ package net.frozenbit.plugin5zig.cubecraft;
 
 import eu.the5zig.mod.util.NetworkPlayerInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CubeCraftPlayerBuilder {
-    private Rank rank;
-    private List<String> tags;
+    private Rank rank = Rank.NONE;
+    private List<String> tags = new ArrayList<>();
     private NetworkPlayerInfo info;
 
     public CubeCraftPlayerBuilder setRank(Rank rank) {
@@ -17,10 +18,6 @@ public class CubeCraftPlayerBuilder {
     public CubeCraftPlayerBuilder setTags(List<String> tags) {
         this.tags = tags;
         return this;
-    }
-
-    public boolean isTagsSet() {
-        return !(tags == null);
     }
 
     public CubeCraftPlayerBuilder setInfo(NetworkPlayerInfo info) {

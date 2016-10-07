@@ -8,6 +8,7 @@ import eu.the5zig.mod.util.NetworkPlayerInfo;
 import eu.the5zig.util.minecraft.ChatColor;
 import net.frozenbit.plugin5zig.cubecraft.*;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.CubeCraftGameMode;
+import net.frozenbit.plugin5zig.cubecraft.gamemodes.VotableCubeCraftGameMode;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -51,13 +52,13 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
         if (!category.equals("generic") && !category.equals(prefix)) {
             return;
         }
-
         switch (parts.next()) {
             case "join":
                 requestPlayerList();
                 break;
             case "left":
                 gameMode.getPlayers().remove(gameMode.getPlayerByName(match.get(0)));
+                gameMode.playerListUpdate();
                 gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
                 break;
             case "starting":
@@ -105,6 +106,18 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
                 }
                 break;
             }
+            case "vote": {
+                if (gameMode instanceof VotableCubeCraftGameMode) {
+                    ((VotableCubeCraftGameMode) gameMode).onVote(match.get(0), parts.next(), match.get(1));
+                }
+                break;
+            }
+            case "draw": {
+                if (gameMode instanceof VotableCubeCraftGameMode) {
+                    ((VotableCubeCraftGameMode) gameMode).onDrawResult(parts.next(), match.get(0));
+                }
+                break;
+            }
             case "welcome": {
                 gameMode.setState(GameState.FINISHED);
                 break;
@@ -118,13 +131,34 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
         gameMode.getPlayers().clear();
         gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
         Main.getInstance().getLogger().println("gamemode joined!");
+        requestPlayerList();
     }
 
     protected void updatePlayerList(CubeCraftGameMode gameMode, IPatternResult match) {
         Map<String, CubeCraftPlayerBuilder> playerBuilders = new HashMap<>();
         for (NetworkPlayerInfo tabPlayer : The5zigAPI.getAPI().getServerPlayers())
-            playerBuilders.put(tabPlayer.getGameProfile().getName(), new CubeCraftPlayerBuilder().setInfo(tabPlayer));
-        String listPlayersString = match.get(0);
+            playerBuilders.put(tabPlayer.getGameProfile().getName(),
+                    new CubeCraftPlayerBuilder().setInfo(tabPlayer));
+        Collection<CubeCraftPlayerBuilder> cmdPlayerList = parsePlayerList(playerBuilders, match.get(0));
+        List<CubeCraftPlayer> playerList = gameMode.getPlayers();
+        playerList.clear();
+        for (CubeCraftPlayerBuilder playerBuilder : playerBuilders.values()) {
+            if (!cmdPlayerList.contains(playerBuilder))
+                playerBuilder.setTags(Collections.singletonList("Vanished"));
+            playerList.add(playerBuilder.createCubeCraftPlayer());
+        }
+        gameMode.playerListUpdate();
+    }
+
+    /**
+     * Parse the output of the /list command
+     *
+     * @param playerBuilders    A map of player names to player builders to read the parsed info into
+     * @param listPlayersString First match group of generic.playerList
+     * @return A list of builders of every player encountered in the parsed list.
+     */
+    private Collection<CubeCraftPlayerBuilder> parsePlayerList(Map<String, CubeCraftPlayerBuilder> playerBuilders, String listPlayersString) {
+        Set<CubeCraftPlayerBuilder> playerBuilderList = new HashSet<>();
         String[] listPlayerStrings = listPlayersString.split(", ");
         for (String listPlayer : listPlayerStrings) {
             List<String> tags = new ArrayList<>();
@@ -132,14 +166,15 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
             String name = parts[parts.length - 1];
             CubeCraftPlayerBuilder playerBuilder = playerBuilders.get(name);
             if (playerBuilder == null) {
-                Main.getInstance().getLogger().println(String.format("Player %s was in the /list but not in the tab list", name));
+                Main.getInstance().getLogger().println(
+                        format("Player %s was in the /list but not in the tab list", name));
                 continue;
             }
             for (int i = 0; i < parts.length - 1; i++) {
                 String part = parts[i];
                 String rankString = Util.extractGroup(part, RANK_PATTERN, 1);
                 if (rankString != null) {
-                    playerBuilder.setRank(Rank.fromString(rankString));
+                    playerBuilder.setRank(Rank.valueOf(rankString.toUpperCase()));
                 }
                 String tag = Util.extractGroup(part, TAG_PATTERN, 1);
                 if (tag != null) {
@@ -147,14 +182,9 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
                 }
             }
             playerBuilder.setTags(tags);
+            playerBuilderList.add(playerBuilder);
         }
-        List<CubeCraftPlayer> playerList = gameMode.getPlayers();
-        playerList.clear();
-        for (CubeCraftPlayerBuilder playerBuilder : playerBuilders.values()) {
-            if (!playerBuilder.isTagsSet())
-                playerBuilder.setTags(Collections.singletonList("Vanished"));
-            playerList.add(playerBuilder.createCubeCraftPlayer());
-        }
+        return playerBuilderList;
     }
 
     private void playerListCommand() {

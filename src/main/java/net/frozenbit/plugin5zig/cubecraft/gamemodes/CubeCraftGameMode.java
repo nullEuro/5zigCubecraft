@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public abstract class CubeCraftGameMode extends GameMode {
-    private List<CubeCraftPlayer> players = new ArrayList<>();
+    protected List<CubeCraftPlayer> players = new ArrayList<>();
     private String kit;
     private boolean kitsEnabled;
     private int pointsEarned;
@@ -23,8 +23,15 @@ public abstract class CubeCraftGameMode extends GameMode {
         return null;
     }
 
+    /**
+     * @return A list of players currently in this gamemode. The list can be modified, however
+     * {@link #playerListUpdate()} MUST be called afterwards.
+     */
     public List<CubeCraftPlayer> getPlayers() {
         return players;
+    }
+
+    public void playerListUpdate() {
     }
 
     public String getKit() {

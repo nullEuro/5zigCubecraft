@@ -2,7 +2,7 @@ package net.frozenbit.plugin5zig.cubecraft.gamemodes;
 
 import net.frozenbit.plugin5zig.cubecraft.stalker.Stalker;
 
-public class SkywarsMode extends VotableCubeCraftGameMode {
+public class SkywarsMode extends TimeLootVotableMode {
     private static Stalker stalker;
 
     public SkywarsMode() {
