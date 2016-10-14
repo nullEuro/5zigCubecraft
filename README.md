@@ -7,26 +7,78 @@ This is not an official plugin and I am not affiliated with Cubecraft or 5zig.
 
 ## Features
 
-### General
+|Item     |SkyWars|Survival Games|EggWars|Duels|Assassination|
+|---------|:-----:|:------------:|:-----:|:---:|:-----------:|
+|Voters   |✓      |✓             |✓      |✗    |✗            |
+|Modifiers|✓      |✓             |✓      |✗    |✗            |
+|Kit      |✓      |✓             |✓      |✗    |✗            |
+|Stalker  |✓      |✓             |✓      |✓    |✗            |
+|Countdown|✓      |✓             |✓      |✓    |✗            |
+|Summary  |✓      |✓             |✓      |✓    |✗            |
+|LeaveKey |✓      |✓             |✓      |✓    |✓            |
+|QuickChat|✓      |✓             |✓      |✓    |✓            |
+|Money    |✗      |✗             |✗      |✗    |✓            |
+|Opponent |✗      |✗             |✗      |✓    |✗            |
 
-* **LeaveKey** configurable hotkey for `/leave`
+### Voters
 
-### SkyWars
+![Voters](https://i.imgur.com/RQXPqXd.png)
 
-* **ChestType** shows the currently active chest type (basic, normal, overpowered) during the game
-* **Voters** shows a list of players that can vote for chest types and what they voted for
-* **Kit** shows the currrently selected kit (or shows that no kit has been selected)
-* **Stalker** shows how often other players in the game have killed you and how often you killed them previously
+Shows a list of players that can vote for item types, the time or heath and what they voted for.
+
+### Modifiers
+
+![Modifiers](https://i.imgur.com/arRBl5d.png)
+
+Shows the currently active item type (basic, normal, overpowered) and time or health during the game.
+
+### Kit
+
+![Kit](https://i.imgur.com/uTHjKJe.png)
+
+Shows the currently selected kit (or shows that no kit has been selected).
+
+### Stalker
+
+![Stalker](https://i.imgur.com/P5CMX3t.png)
+
+Shows how often other players in the game have killed you and how often you killed them previously in the current gamemode.
+
+### Countdown
+
+![Countdown](https://i.imgur.com/qd2nQev.png)
+
+Enables the 5zig countdown item.
+
+### Summary
+
+![Summary](https://i.imgur.com/AVsSvZV.png)
+
+Displays a short summary in the chat after the game ends.
+
+### LeaveKey
+
+Press a configurable key (the default is L) to execute `/leave`.
+
+### QuickChat
+
+Use a set configurable keys (the default set is numpad 1-9) to send custom chat messages.
+
+### Money
+
+![Money](https://i.imgur.com/EeriJU9.png)
+
+Shows how much money you have in your inventory.
+
+### Opponent
+
+![Opponent](https://i.imgur.com/Ap8RcXF.png)
+
+Shows your opponents name, his ping and the number of previous kills/deaths against this player.
 
 ### Upcoming
 
 * Write messages in the chat during the countdown and they will be posted when the game starts
-* Summary after the game, for example "You killed 5 players in 6 minutes and 32 seconds."
-* Support for other game modes
-
-![5zig CubeCraft screenshot 1](https://raw.githubusercontent.com/nullEuro/5zigCubecraft/master/docs/screenshots/5zigCubecraft1.png)
-
-![5zig CubeCraft screenshot 2](https://raw.githubusercontent.com/nullEuro/5zigCubecraft/master/docs/screenshots/5zigCubecraft2.png)
 
 ## Installation
 
