@@ -33,7 +33,7 @@ public class GameListener extends AbstractGameListener<GameMode> {
             countdown = 10;
         } else if (key.startsWith("assassination.")) {
             getGameListener().switchLobby("Assassination");
-        } else if (key.equals("duels.connect")) {
+        } else if (key.equals("duels.starting")) {
             getGameListener().switchLobby("Duels");
         }
     }
