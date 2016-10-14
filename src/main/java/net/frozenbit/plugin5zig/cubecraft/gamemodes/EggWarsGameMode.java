@@ -75,7 +75,7 @@ public class EggWarsGameMode extends VotableCubeCraftGameMode {
         return new String[]{"health", "items"};
     }
 
-    private enum HealthType {
+    public enum HealthType {
         NORMAL("♥"), DOUBLE("♥♥"), TRIPLE("♥♥♥");
 
         public final String symbol;
