@@ -44,7 +44,7 @@ public class OpponentItem extends GameModeItem<DuelsGameMode> {
         }
         NetworkPlayerInfo opponentInfo = getGameMode().getOpponentInfo();
         if (opponentInfo == null) {
-            The5zigAPI.getAPI().getRenderHelper().drawString(ChatColor.GRAY + "...", x, y);
+            The5zigAPI.getAPI().getRenderHelper().drawString(getPrefix() + ChatColor.GRAY + "...", x, y);
             lines = 1;
             return;
         }
