@@ -7,9 +7,9 @@ import eu.the5zig.mod.render.RenderLocation;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.TimeLootVotableMode;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.VotableCubeCraftGameMode;
 
-public class ChestTypeItem extends GameModeItem<VotableCubeCraftGameMode> {
+public class GameModifiersItem extends GameModeItem<VotableCubeCraftGameMode> {
 
-    public ChestTypeItem() {
+    public GameModifiersItem() {
         super(VotableCubeCraftGameMode.class);
     }
 

@@ -7,10 +7,10 @@ import eu.the5zig.mod.render.RenderLocation;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.TimeLootVotableMode;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.VotableCubeCraftGameMode;
 
-public class VoterCountItem extends GameModeItem<VotableCubeCraftGameMode> {
+public class VoterListItem extends GameModeItem<VotableCubeCraftGameMode> {
     private int voterCount;
 
-    public VoterCountItem() {
+    public VoterListItem() {
         super(VotableCubeCraftGameMode.class);
     }
 

@@ -90,9 +90,9 @@ public class Main {
         The5zigAPI.getAPI().registerServerInstance(this, ServerInstance.class);
 
         The5zigAPI.getAPI().registerModuleItem(this, "snake", SnakeItem.class, Category.OTHER);
-        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftvoters", VoterCountItem.class, Category.SERVER_GENERAL);
+        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftvoters", VoterListItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftkit", KitItem.class, Category.SERVER_GENERAL);
-        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftchest", ChestTypeItem.class, Category.SERVER_GENERAL);
+        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftchest", GameModifiersItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftstalker", StalkerItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftassassinationmoney", MoneyItem.class, Category.SERVER_GENERAL);
         The5zigAPI.getAPI().registerModuleItem(this, "cubecraftduelsopponent", OpponentItem.class, Category.SERVER_GENERAL);
