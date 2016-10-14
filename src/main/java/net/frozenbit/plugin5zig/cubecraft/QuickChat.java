@@ -29,7 +29,7 @@ public class QuickChat {
                 message = message.substring(0, endIndex) + "…";
             }
             IKeybinding keyBinding = The5zigAPI.getAPI()
-                    .registerKeyBiding("Chat: " + message, DEFAULT_KEYS[i], "QuickChat");
+                    .registerKeyBiding("Msg " + (i + 1) + ": " + message, DEFAULT_KEYS[i], "QuickChat");
             messages.add(new QuickMessage(quickMessages.get(i), keyBinding));
         }
     }
