@@ -16,7 +16,8 @@ public abstract class TimeLootVotableMode extends VotableCubeCraftGameMode {
     protected String formatVoteString(CubeCraftPlayer player, Map<String, String> vote) {
         DaytimeType time = vote.containsKey("time") ?
                 DaytimeType.fromString(vote.get("time")) : DaytimeType.NONE;
-        return LootType.fromString(firstNonNull(vote.get("loot"), "")).color
+        return (player.getRank() == Rank.GOLD ? ChatColor.DARK_GRAY :
+                LootType.fromString(firstNonNull(vote.get("loot"), "")).color)
                + player.getName() + ChatColor.RESET + " " + time.coloredSymbol();
     }
 
