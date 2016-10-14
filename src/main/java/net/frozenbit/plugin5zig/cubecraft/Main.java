@@ -13,7 +13,6 @@ import eu.the5zig.mod.modules.Category;
 import eu.the5zig.mod.plugin.Plugin;
 import eu.the5zig.mod.util.IKeybinding;
 import net.frozenbit.plugin5zig.cubecraft.items.*;
-import net.frozenbit.plugin5zig.cubecraft.stalker.Stalker;
 import net.frozenbit.plugin5zig.cubecraft.updater.Updater;
 import org.lwjgl.input.Keyboard;
 
@@ -26,8 +25,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Plugin(name = "5zigCubecraft", version = Build.version)
 public class Main {
-    private static final String LOG_FILE = "cubecraft_5ziglog.txt";
     public static final Path PLUGIN_PATH = Paths.get("the5zigmod/plugins/5zigCubecraft/");
+    private static final String LOG_FILE = "cubecraft_5ziglog.txt";
     private static Main instance;
 
     private IKeybinding leaveKey, snakeKey;
@@ -106,6 +105,9 @@ public class Main {
             updater.start();
         }
 
+        QuickChat quickChat = new QuickChat(config);
+        The5zigAPI.getAPI().getPluginManager().registerListener(this, quickChat);
+
         // copy the old skywars database - REMOVE THIS SOME TIME IN THE FUTURE!
         migrateSkywarsDb();
 
@@ -122,7 +124,7 @@ public class Main {
                 return;
             }
             try {
-                target.mkdirs();
+                java.nio.file.Files.createDirectories(target.toPath());
                 for (File file : db_files) {
                     Files.copy(file, new File(target, file.getName()));
                 }
