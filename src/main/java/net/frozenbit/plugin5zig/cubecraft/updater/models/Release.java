@@ -25,12 +25,17 @@ public class Release {
     }
 
     public static class Asset {
+        private String name;
         private String url;
         @SerializedName("content_type")
         private String type;
 
         public String getUrl() {
             return url;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }

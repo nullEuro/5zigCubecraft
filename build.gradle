@@ -3,7 +3,7 @@ import org.gradle.internal.os.OperatingSystem;
 apply plugin: 'java'
 apply plugin: 'idea'
 
-def major = 1, minor = 2, patch = 0;
+def major = 1, minor = 2, patch = 1;
 
 version = "$major.$minor.$patch"
 
@@ -75,6 +75,7 @@ dependencies {
     compileOnly 'org.apache.logging.log4j:log4j-api:2.0-rc2'
     compileOnly 'com.google.guava:guava:17.0'
     compileOnly 'org.lwjgl.lwjgl:lwjgl:2.9.1'
+    compileOnly 'org.apache.commons:commons-lang3:3.3.2'
     compileOnly minecraftLibraries.matching { include '**/authlib-1.5.22.jar' }
     compileOnly fileTree(dir: 'libs', include: 'The-5zig-API-*.jar')
 

@@ -7,6 +7,7 @@ import net.frozenbit.plugin5zig.cubecraft.Build;
 import net.frozenbit.plugin5zig.cubecraft.Main;
 import net.frozenbit.plugin5zig.cubecraft.updater.models.PluginInfo;
 import net.frozenbit.plugin5zig.cubecraft.updater.models.Release;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -30,6 +31,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
+import static java.lang.String.format;
+
 public class Updater {
     private static final String LATEST_RELEASE_URL =
             "https://api.github.com/repos/nullEuro/5zigCubecraft/releases/latest";
@@ -45,6 +48,7 @@ public class Updater {
      * Updated jar if there is a new release, else null
      */
     private File downloadedJar;
+    private Release.Asset downloadedAsset;
 
     public Updater(Main main) {
         this.main = main;
@@ -73,6 +77,35 @@ public class Updater {
             throw new ClientProtocolException("Response contains no content");
         }
         return entity;
+    }
+
+    /**
+     * Delete files currently in use by this JVM on windows systems. This works by starting a new
+     * process when the JVM terminates.
+     *
+     * @param files Files to delete
+     */
+    private static void deleteFilesWindowsWorkaround(final List<File> files) {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (File file : files) {
+                        Runtime.getRuntime().exec(new String[]{
+                                // start process detached from JVM
+                                "cmd", "/c", "start", "/b", "cmd", "/c",
+                                // try to delete the file until it succeeds
+                                format("for /l %%N in () do (del %1$s & IF NOT EXIST %1$s exit)", file.getName()),
+                                // discard output to avoid stalling the process
+                                "2>&1",
+                                ">NUL"
+                        }, null, file.getParentFile());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
     }
 
     /**
@@ -118,13 +151,13 @@ public class Updater {
 
             The5zigAPI.getLogger().info("5zigCubecraft update available, downloading...");
 
-            Release.Asset jarAsset = release.getJarAsset();
-            if (jarAsset == null) {
+            downloadedAsset = release.getJarAsset();
+            if (downloadedAsset == null) {
                 The5zigAPI.getLogger().warn("Release without JAR asset");
                 return;
             }
 
-            downloadedJar = downloadJar(jarAsset);
+            downloadedJar = downloadJar(downloadedAsset);
             if (downloadedJar != null) {
                 main.runOnMainThread(new ShowUpdateNotificationRunnable());
             }
@@ -138,12 +171,16 @@ public class Updater {
      */
     private void installNewJar() {
         try {
-            for (File jar : findOwnJars()) {
-                Files.delete(jar.toPath());
+            if (SystemUtils.IS_OS_WINDOWS) {
+                deleteFilesWindowsWorkaround(findOwnJars());
+            } else {
+                for (File jar : findOwnJars()) {
+                    Files.delete(jar.toPath());
+                }
             }
 
             // if this fails, this plugin has just uninstalled itself
-            Files.move(downloadedJar.toPath(), Paths.get(PLUGIN_DIRECTORY, JAR_NAME));
+            Files.move(downloadedJar.toPath(), Paths.get(PLUGIN_DIRECTORY, downloadedAsset.getName()));
         } catch (IOException e) {
             The5zigAPI.getLogger().warn("Cannot install 5zigCubecraft update", e);
         }
@@ -167,7 +204,7 @@ public class Updater {
     }
 
     private File downloadJar(Release.Asset jarAsset) {
-        File target = new File(PLUGIN_DIRECTORY, JAR_NAME + ".dl");
+        File target = new File(PLUGIN_DIRECTORY, jarAsset.getName() + ".dl");
         try {
             HttpGet jarDownloadRequest = new HttpGet(jarAsset.getUrl());
             jarDownloadRequest.setHeader("Accept", "application/octet-stream");
@@ -271,7 +308,9 @@ public class Updater {
         @Override
         public File handleResponse(HttpResponse response) throws IOException {
             HttpEntity entity = checkResponse(response);
-            entity.writeTo(new FileOutputStream(this.target));
+            try (FileOutputStream out = new FileOutputStream(this.target)) {
+                entity.writeTo(out);
+            }
             return this.target;
         }
     }
