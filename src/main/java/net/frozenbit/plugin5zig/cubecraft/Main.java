@@ -12,6 +12,8 @@ import eu.the5zig.mod.event.UnloadEvent;
 import eu.the5zig.mod.modules.Category;
 import eu.the5zig.mod.plugin.Plugin;
 import eu.the5zig.mod.util.IKeybinding;
+import net.frozenbit.plugin5zig.cubecraft.commands.CommandRegistry;
+import net.frozenbit.plugin5zig.cubecraft.commands.bancheck.BanCheckCommandHandler;
 import net.frozenbit.plugin5zig.cubecraft.items.*;
 import net.frozenbit.plugin5zig.cubecraft.updater.Updater;
 import org.lwjgl.input.Keyboard;
@@ -36,6 +38,7 @@ public class Main {
     private PrintWriter logger;
     private Updater updater;
     private PluginConfig config;
+    private CommandRegistry commandRegistry;
 
     public static Main getInstance() {
         return instance;
@@ -86,6 +89,10 @@ public class Main {
     public void onLoad(LoadEvent loadEvent) {
         logger = createLogger();
         config = readPluginConfig();
+
+        commandRegistry = new CommandRegistry();
+        commandRegistry.register(new BanCheckCommandHandler(this));
+        The5zigAPI.getAPI().getPluginManager().registerListener(this, commandRegistry);
 
         The5zigAPI.getAPI().registerServerInstance(this, ServerInstance.class);
 
@@ -158,6 +165,9 @@ public class Main {
         logger.close();
         if (updater != null) {
             updater.stop();
+        }
+        if (commandRegistry != null) {
+            commandRegistry.close();
         }
     }
 
