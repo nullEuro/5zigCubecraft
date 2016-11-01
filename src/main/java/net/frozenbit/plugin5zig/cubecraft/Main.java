@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Main {
     public static final Path PLUGIN_PATH = Paths.get("the5zigmod/plugins/5zigCubecraft/");
     private static final String LOG_FILE = "cubecraft_5ziglog.txt";
+    private static final File CONFIG_FILE = PLUGIN_PATH.resolve("config.json").toFile();
     private static Main instance;
 
     private IKeybinding leaveKey, snakeKey;
@@ -63,25 +64,35 @@ public class Main {
 
     private static PluginConfig readPluginConfig() {
         try {
-            File configFile = PLUGIN_PATH.resolve("config.json").toFile();
             PluginConfig config;
-            if (!configFile.exists()) {
+            if (!CONFIG_FILE.exists()) {
                 config = new PluginConfig();
-                Files.createParentDirs(configFile);
+                Files.createParentDirs(CONFIG_FILE);
             } else {
                 Gson gson = new Gson();
-                config = gson.fromJson(new FileReader(configFile), PluginConfig.class);
+                config = gson.fromJson(new FileReader(CONFIG_FILE), PluginConfig.class);
             }
-            try (FileWriter writer = new FileWriter(configFile)) {
-                Gson gson = new GsonBuilder()
-                        .setPrettyPrinting()
-                        .create();
-                gson.toJson(config, writer);
-            }
+            writeConfig(config);
             return config;
         } catch (IOException e) {
             The5zigAPI.getLogger().warn("Cannot create or read config file, assuming defaults", e);
             return new PluginConfig();
+        }
+    }
+
+    /**
+     * Write the specified configuration to the config file. Will overwrite the old file or create a new one when
+     * it does not exist yet.
+     *
+     * @param config Configuration to serialize and write
+     * @throws IOException when the writing fails (no permissions, the file exists but is a directory, ...)
+     */
+    public static void writeConfig(PluginConfig config) throws IOException {
+        try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create();
+            gson.toJson(config, writer);
         }
     }
 
@@ -111,9 +122,6 @@ public class Main {
             updater = new Updater(this);
             updater.start();
         }
-
-        QuickChat quickChat = new QuickChat(config);
-        The5zigAPI.getAPI().getPluginManager().registerListener(this, quickChat);
 
         // copy the old skywars database - REMOVE THIS SOME TIME IN THE FUTURE!
         migrateSkywarsDb();
