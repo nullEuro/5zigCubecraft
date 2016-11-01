@@ -16,7 +16,6 @@ This is not an official plugin and I am not affiliated with Cubecraft or 5zig.
 |Countdown|✓      |✓             |✓      |✓    |✗            |
 |Summary  |✓      |✓             |✓      |✓    |✗            |
 |LeaveKey |✓      |✓             |✓      |✓    |✓            |
-|QuickChat|✓      |✓             |✓      |✓    |✓            |
 |Money    |✗      |✗             |✗      |✗    |✓            |
 |Opponent |✗      |✗             |✗      |✓    |✗            |
 
@@ -60,10 +59,6 @@ Displays a short summary in the chat after the game ends.
 
 Press a configurable key (the default is L) to execute `/leave`.
 
-### QuickChat
-
-Use a set configurable keys (the default set is numpad 1-9) to send custom chat messages.
-
 ### Money
 
 ![Money](https://i.imgur.com/EeriJU9.png)
@@ -75,6 +70,13 @@ Shows how much money you have in your inventory.
 ![Opponent](https://i.imgur.com/Ap8RcXF.png)
 
 Shows your opponents name, his ping and the number of previous kills/deaths against this player.
+
+### Commands
+
+The plugin now supports commands. Type `.help` in the chat to get a list of commands or `.help <command>` to get help for a specified command.
+
+#### .bans
+![.bans command](http://i.imgur.com/fZjemMw.png)
 
 ### Upcoming
 
