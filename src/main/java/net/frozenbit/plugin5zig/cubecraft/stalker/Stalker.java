@@ -6,6 +6,7 @@ import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
 import net.frozenbit.plugin5zig.cubecraft.Main;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public class Stalker {
     private Storage storage;
     private String ownName;
     private GameMode gameMode;
-    private List<StalkedPlayer> stalkedPlayerList;
+    private final List<StalkedPlayer> stalkedPlayerList;
     private int maxNameWidth = 0;
     private int shownPlayerCount = 0;
 
@@ -22,7 +23,7 @@ public class Stalker {
         this.gameMode = gameMode;
         storage = new Storage(gameMode);
         ownName = The5zigAPI.getAPI().getGameProfile().getName();
-        stalkedPlayerList = new ArrayList<>();
+        stalkedPlayerList = Collections.synchronizedList(new ArrayList<>());
     }
 
     public void onKill(String victim, String killer) {
@@ -55,13 +56,18 @@ public class Stalker {
         maxNameWidth = 0;
         stalkedPlayerList.clear();
         shownPlayerCount = 0;
-        for (CubeCraftPlayer cubeCraftPlayer : playerList) {
-            maxNameWidth = Math.max(maxNameWidth, The5zigAPI.getAPI().getRenderHelper().getStringWidth(cubeCraftPlayer.getName()));
-            StalkedPlayer stalkedPlayer = storage.getStalkedPlayer(cubeCraftPlayer);
-            if (stalkedPlayer.getKills() != 0 || stalkedPlayer.getDeaths() != 0)
-                ++shownPlayerCount;
-            stalkedPlayerList.add(stalkedPlayer);
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                for (CubeCraftPlayer cubeCraftPlayer : playerList) {
+                    maxNameWidth = Math.max(maxNameWidth, The5zigAPI.getAPI().getRenderHelper().getStringWidth(cubeCraftPlayer.getName()));
+                    StalkedPlayer stalkedPlayer = storage.getStalkedPlayer(cubeCraftPlayer);
+                    if (stalkedPlayer.getKills() != 0 || stalkedPlayer.getDeaths() != 0)
+                        ++shownPlayerCount;
+                    stalkedPlayerList.add(stalkedPlayer);
+                }
+            }
+        }.start();
     }
 
     public List<StalkedPlayer> getStalkedPlayerList() {
