@@ -23,7 +23,7 @@ public class Stalker {
         this.gameMode = gameMode;
         storage = new Storage(gameMode);
         ownName = The5zigAPI.getAPI().getGameProfile().getName();
-        stalkedPlayerList = Collections.synchronizedList(new ArrayList<>());
+        stalkedPlayerList = Collections.synchronizedList(new ArrayList<StalkedPlayer>());
     }
 
     public void onKill(String victim, String killer) {
@@ -52,7 +52,7 @@ public class Stalker {
         storage.storePlayer(otherPlayer);
     }
 
-    public void onPlayerListUpdate(List<CubeCraftPlayer> playerList) {
+    public void onPlayerListUpdate(final List<CubeCraftPlayer> playerList) {
         maxNameWidth = 0;
         stalkedPlayerList.clear();
         shownPlayerCount = 0;

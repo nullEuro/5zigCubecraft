@@ -112,10 +112,15 @@ public class StalkerCommandHandler extends CommandHandler {
                 nameIdPairs = client.execute(request, new MojangResponseHandler());
             } catch (final IOException e) {
                 The5zigAPI.getLogger().error("Cannot query uuid list", e);
-                main.runOnMainThread(() -> printer.printErrln("Unable to query uuids: " + e.getMessage()));
+                main.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        printer.printErrln("Unable to query uuids: " + e.getMessage());
+                    }
+                });
                 return;
             }
-            List<String> output = new ArrayList<>();
+            final List<String> output = new ArrayList<>();
             for (String name : usernames)
                 if (!nameIdPairs.containsKey(name))
                     output.add(ChatColor.RED + String.format("Player not found: %s", name));
@@ -135,9 +140,12 @@ public class StalkerCommandHandler extends CommandHandler {
                 default:
                     throw new IllegalArgumentException("invalid command: " + commands.get(0));
             }
-            main.runOnMainThread(() -> {
-                for (String line : output)
-                    printer.println(line);
+            main.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    for (String line : output)
+                        printer.println(line);
+                }
             });
         }
     }

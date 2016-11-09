@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -99,7 +100,12 @@ public class Storage implements Closeable {
     private static List<String> getPLayerStats(UUID id, DbModifier modifier) {
         List<String> playerStats = new ArrayList<>();
         File stalkerDir = Main.PLUGIN_PATH.resolve("stalker").toFile();
-        File[] directories = stalkerDir.listFiles(File::isDirectory);
+        File[] directories = stalkerDir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isDirectory();
+            }
+        });
         if (directories == null)
             throw new RuntimeException("Illegal database state: No directories");
         for (File directory : directories) {
@@ -133,10 +139,13 @@ public class Storage implements Closeable {
         return getPLayerStats(id, null);
     }
 
-    public static List<String> deletePlayerStats(UUID id, String gamemode) {
-        return getPLayerStats(id, (db, key, currentGamemode) -> {
-            if (gamemode.equals(GAMEMODE_WILDCARD) || gamemode.equals(currentGamemode))
-                db.delete(key);
+    public static List<String> deletePlayerStats(UUID id, final String gamemode) {
+        return getPLayerStats(id, new DbModifier() {
+            @Override
+            public void modify(DB db, byte[] key, String currentGamemode) {
+                if (gamemode.equals(GAMEMODE_WILDCARD) || gamemode.equals(currentGamemode))
+                    db.delete(key);
+            }
         });
     }
 }

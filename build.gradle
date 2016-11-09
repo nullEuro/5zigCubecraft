@@ -42,6 +42,13 @@ compileJava.dependsOn generateSources
 compileJava.source generateSources.outputs.files, sourceSets.main.java
 //sourceSets.main.srcDirs += 'build/generated-src/'
 
+allprojects {
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = '1.7'
+        targetCompatibility = '1.7'
+    }
+}
+
 idea {
     module {
         sourceDirs += generateSources.outputs.files
