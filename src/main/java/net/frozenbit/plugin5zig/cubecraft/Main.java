@@ -14,6 +14,7 @@ import eu.the5zig.mod.plugin.Plugin;
 import eu.the5zig.mod.util.IKeybinding;
 import net.frozenbit.plugin5zig.cubecraft.commands.CommandRegistry;
 import net.frozenbit.plugin5zig.cubecraft.commands.bancheck.BanCheckCommandHandler;
+import net.frozenbit.plugin5zig.cubecraft.commands.stalker.StalkerCommandHandler;
 import net.frozenbit.plugin5zig.cubecraft.items.*;
 import net.frozenbit.plugin5zig.cubecraft.updater.Updater;
 import org.lwjgl.input.Keyboard;
@@ -103,6 +104,7 @@ public class Main {
 
         commandRegistry = new CommandRegistry();
         commandRegistry.register(new BanCheckCommandHandler(this));
+        commandRegistry.register(new StalkerCommandHandler(this));
         The5zigAPI.getAPI().getPluginManager().registerListener(this, commandRegistry);
 
         The5zigAPI.getAPI().registerServerInstance(this, ServerInstance.class);

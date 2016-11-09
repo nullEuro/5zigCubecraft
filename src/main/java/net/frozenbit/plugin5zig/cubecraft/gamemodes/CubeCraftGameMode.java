@@ -4,12 +4,12 @@ import eu.the5zig.mod.server.GameMode;
 import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
 import net.frozenbit.plugin5zig.cubecraft.stalker.Stalker;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public abstract class CubeCraftGameMode extends GameMode {
-    protected List<CubeCraftPlayer> players = new ArrayList<>();
+    protected List<CubeCraftPlayer> players = new CopyOnWriteArrayList<>();
     private String kit;
     private boolean kitsEnabled;
     private int pointsEarned;

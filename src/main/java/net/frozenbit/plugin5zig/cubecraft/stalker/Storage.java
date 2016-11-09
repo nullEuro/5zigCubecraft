@@ -14,10 +14,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.*;
@@ -25,21 +22,25 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 public class Storage implements Closeable {
 
     private final static int STALKED_PLAYER_CACHE_SIZE = 200;
+    private final static String GAMEMODE_WILDCARD = "all";
+    private static Options options;
     private final File db_file;
-    private Options options;
     private ConcurrentHashMap<UUID, StalkedPlayer> stalkedPlayerCache;
+
+    static {
+        options = new Options();
+        options.createIfMissing(true);
+    }
 
     public Storage(GameMode gameMode) {
         db_file = Main.PLUGIN_PATH.resolve(String.format("stalker/%s.db", gameMode.getName())).toFile();
-        options = new Options();
-        options.createIfMissing(true);
         stalkedPlayerCache = new ConcurrentHashMap<>();
     }
 
     public StalkedPlayer getStalkedPlayer(CubeCraftPlayer player) {
         StalkedPlayer stalkedPlayer = stalkedPlayerCache.get(player.getId());
         if (stalkedPlayer == null) {
-            synchronized (db_file) {
+            synchronized (Storage.class) {
                 try (DB db = factory.open(db_file, options)) {
                     ByteBuffer key = ByteBuffer.allocate(16);
                     key.putLong(player.getId().getMostSignificantBits());
@@ -75,7 +76,7 @@ public class Storage implements Closeable {
     }
 
     public void storePlayer(StalkedPlayer player) {
-        synchronized (db_file) {
+        synchronized (Storage.class) {
             try (DB db = factory.open(db_file, options)) {
                 ByteBuffer key = ByteBuffer.allocate(16);
                 key.putLong(player.getId().getMostSignificantBits());
@@ -91,4 +92,51 @@ public class Storage implements Closeable {
 
     }
 
+    private interface DbModifier {
+        void modify(DB db, byte[] key, String gamemode);
+    }
+
+    private static List<String> getPLayerStats(UUID id, DbModifier modifier) {
+        List<String> playerStats = new ArrayList<>();
+        File stalkerDir = Main.PLUGIN_PATH.resolve("stalker").toFile();
+        File[] directories = stalkerDir.listFiles(File::isDirectory);
+        if (directories == null)
+            throw new RuntimeException("Illegal database state: No directories");
+        for (File directory : directories) {
+            String gamemode = directory.getName().replace(".db", "");
+            JSONObject jsonPlayerStats = null;
+            synchronized (Storage.class) {
+                try (DB db = factory.open(directory, options)) {
+                    ByteBuffer key = ByteBuffer.allocate(16);
+                    key.putLong(id.getMostSignificantBits());
+                    key.putLong(id.getLeastSignificantBits());
+                    if (modifier != null)
+                        modifier.modify(db, key.array(), gamemode);
+                    byte[] rawPlayerData = db.get(key.array());
+                    if (rawPlayerData != null) {
+                        jsonPlayerStats = new JSONObject(asString(rawPlayerData));
+                    }
+                } catch (IOException | DBException ignored) {
+
+                }
+            }
+            if (jsonPlayerStats != null) {
+                playerStats.add(String.format("    %s: %d kills, %d deaths", gamemode, jsonPlayerStats.getInt("kills"), jsonPlayerStats.getInt("deaths")));
+            }
+        }
+        if (playerStats.size() == 0)
+            playerStats.add("    No stats for this player");
+        return playerStats;
+    }
+
+    public static List<String> getPlayerStats(UUID id) {
+        return getPLayerStats(id, null);
+    }
+
+    public static List<String> deletePlayerStats(UUID id, String gamemode) {
+        return getPLayerStats(id, (db, key, currentGamemode) -> {
+            if (gamemode.equals(GAMEMODE_WILDCARD) || gamemode.equals(currentGamemode))
+                db.delete(key);
+        });
+    }
 }
