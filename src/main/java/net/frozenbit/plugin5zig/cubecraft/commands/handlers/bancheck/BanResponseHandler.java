@@ -1,4 +1,4 @@
-package net.frozenbit.plugin5zig.cubecraft.commands.bancheck;
+package net.frozenbit.plugin5zig.cubecraft.commands.handlers.bancheck;
 
 import eu.the5zig.mod.The5zigAPI;
 import org.apache.http.HttpEntity;

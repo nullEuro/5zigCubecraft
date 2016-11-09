@@ -60,6 +60,14 @@ public class CommandRegistry {
         return this;
     }
 
+    public void unregister(CommandHandler handler) {
+        if (handler == null) {
+            throw new IllegalArgumentException("command must not be null");
+        }
+        commandMap.values().remove(handler);
+        handlers.remove(handler);
+    }
+
     /**
      * Clears all registered commands and calls their cleanup lifecycle methods. Should be called when the
      * Plugin is unloaded.

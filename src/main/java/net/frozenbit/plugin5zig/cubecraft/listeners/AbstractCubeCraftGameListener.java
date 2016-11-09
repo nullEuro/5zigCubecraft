@@ -59,7 +59,9 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
             case "left":
                 gameMode.getPlayers().remove(gameMode.getPlayerByName(match.get(0)));
                 gameMode.playerListUpdate();
-                gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
+                if (gameMode.isStalkerEnabled()) {
+                    gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
+                }
                 break;
             case "starting":
                 gameMode.setState(GameState.STARTING);
@@ -82,7 +84,9 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
                 if (match.get(1).equals(ownName)) {
                     gameMode.setKills(gameMode.getKills() + 1);
                 }
-                gameMode.getStalker().onKill(match.get(0), match.get(1));
+                if (gameMode.isStalkerEnabled()) {
+                    gameMode.getStalker().onKill(match.get(0), match.get(1));
+                }
                 break;
             }
             case "points":
@@ -90,7 +94,9 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
                 break;
             case "playerList":
                 updatePlayerList(gameMode, match);
-                gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
+                if (gameMode.isStalkerEnabled()) {
+                    gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
+                }
                 break;
             case "selfWin":
             case "selfDeath": {
@@ -129,7 +135,9 @@ public abstract class AbstractCubeCraftGameListener<T extends CubeCraftGameMode>
     public void onGameModeJoin(T gameMode) {
         summaryShown = false;
         gameMode.getPlayers().clear();
-        gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
+        if (gameMode.isStalkerEnabled()) {
+            gameMode.getStalker().onPlayerListUpdate(gameMode.getPlayers());
+        }
         Main.getInstance().getLogger().println("gamemode joined!");
         requestPlayerList();
     }

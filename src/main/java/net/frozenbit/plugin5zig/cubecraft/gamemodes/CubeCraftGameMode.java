@@ -58,5 +58,18 @@ public abstract class CubeCraftGameMode extends GameMode {
         this.pointsEarned += pointsEarned;
     }
 
+    public boolean isStalkerEnabled() {
+        return true;
+    }
+
+    /**
+     * Return a singleton instance for the stalker of this gamemode. Before calling this method
+     * always check {@link #isStalkerEnabled()}.
+     * <p>
+     * Implementing classes that do not need a stalker must overwrite {@link #isStalkerEnabled()}
+     * and should throw an exception here.
+     *
+     * @return A stalker singleton.
+     */
     public abstract Stalker getStalker();
 }

@@ -13,7 +13,8 @@ import eu.the5zig.mod.modules.Category;
 import eu.the5zig.mod.plugin.Plugin;
 import eu.the5zig.mod.util.IKeybinding;
 import net.frozenbit.plugin5zig.cubecraft.commands.CommandRegistry;
-import net.frozenbit.plugin5zig.cubecraft.commands.bancheck.BanCheckCommandHandler;
+import net.frozenbit.plugin5zig.cubecraft.commands.handlers.ColorCommandHandler;
+import net.frozenbit.plugin5zig.cubecraft.commands.handlers.bancheck.BanCheckCommandHandler;
 import net.frozenbit.plugin5zig.cubecraft.commands.stalker.StalkerCommandHandler;
 import net.frozenbit.plugin5zig.cubecraft.items.*;
 import net.frozenbit.plugin5zig.cubecraft.updater.Updater;
@@ -102,9 +103,11 @@ public class Main {
         logger = createLogger();
         config = readPluginConfig();
 
-        commandRegistry = new CommandRegistry();
-        commandRegistry.register(new BanCheckCommandHandler(this));
-        commandRegistry.register(new StalkerCommandHandler(this));
+        commandRegistry = new CommandRegistry()
+                .register(new BanCheckCommandHandler(this))
+                .register(new ColorCommandHandler())
+                .register(new StalkerCommandHandler(this));
+
         The5zigAPI.getAPI().getPluginManager().registerListener(this, commandRegistry);
 
         The5zigAPI.getAPI().registerServerInstance(this, ServerInstance.class);
@@ -185,8 +188,13 @@ public class Main {
         return snake;
     }
 
+
     public PrintWriter getLogger() {
         return logger;
+    }
+
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
     }
 
     public PluginConfig getConfig() {
