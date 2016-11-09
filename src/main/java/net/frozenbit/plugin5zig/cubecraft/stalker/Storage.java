@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 
@@ -24,11 +25,13 @@ public class Storage implements Closeable {
 
     private final static int STALKED_PLAYER_CACHE_SIZE = 200;
     private final static String GAMEMODE_WILDCARD = "all";
-    private static Options options;
+    private final static CopyOnWriteArraySet<UUID> updatedPlayers;
+    private final static Options options;
     private final File db_file;
     private ConcurrentHashMap<UUID, StalkedPlayer> stalkedPlayerCache;
 
     static {
+        updatedPlayers = new CopyOnWriteArraySet<>();
         options = new Options();
         options.createIfMissing(true);
     }
@@ -39,6 +42,9 @@ public class Storage implements Closeable {
     }
 
     public StalkedPlayer getStalkedPlayer(CubeCraftPlayer player) {
+        if (!updatedPlayers.isEmpty())
+            for (UUID id : updatedPlayers)
+                stalkedPlayerCache.remove(id);
         StalkedPlayer stalkedPlayer = stalkedPlayerCache.get(player.getId());
         if (stalkedPlayer == null) {
             synchronized (Storage.class) {
@@ -140,12 +146,14 @@ public class Storage implements Closeable {
     }
 
     public static List<String> deletePlayerStats(UUID id, final String gamemode) {
-        return getPLayerStats(id, new DbModifier() {
+        List<String> output = getPLayerStats(id, new DbModifier() {
             @Override
             public void modify(DB db, byte[] key, String currentGamemode) {
                 if (gamemode.equals(GAMEMODE_WILDCARD) || gamemode.equals(currentGamemode))
                     db.delete(key);
             }
         });
+        updatedPlayers.add(id);
+        return output;
     }
 }
