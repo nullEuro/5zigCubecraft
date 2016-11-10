@@ -18,7 +18,7 @@ public class RespondCommandHandler extends CommandHandler {
     private Deque<Message> messageHistory = new ArrayDeque<>();
 
     public RespondCommandHandler() {
-        super("r", "respond to the last message you have received");
+        super("r", "Respond to the last message you have received");
     }
 
     @Override
