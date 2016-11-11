@@ -4,9 +4,7 @@ import eu.the5zig.mod.The5zigAPI;
 import eu.the5zig.mod.modules.GameModeItem;
 import eu.the5zig.mod.render.RenderLocation;
 import eu.the5zig.util.minecraft.ChatColor;
-import net.frozenbit.plugin5zig.cubecraft.Main;
 import net.frozenbit.plugin5zig.cubecraft.gamemodes.CubeCraftGameMode;
-import net.frozenbit.plugin5zig.cubecraft.gamemodes.SkywarsMode;
 import net.frozenbit.plugin5zig.cubecraft.stalker.StalkedPlayer;
 
 import java.util.List;
@@ -91,6 +89,7 @@ public class StalkerItem extends GameModeItem<CubeCraftGameMode> {
 
     @Override
     public boolean shouldRender(boolean dummy) {
-        return super.shouldRender(dummy) && (dummy || The5zigAPI.getAPI().isPlayerListShown());
+        return super.shouldRender(dummy) && (dummy || (getGameMode().isStalkerEnabled()
+                                                       && The5zigAPI.getAPI().isPlayerListShown()));
     }
 }
