@@ -16,10 +16,7 @@ import org.json.JSONArray;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +37,7 @@ public class StalkerCommandHandler extends CommandHandler {
     }
 
     public StalkerCommandHandler(Main main) {
-        super("stalker", "Manage stored statistics for other players");
+        super("stalker", "Manage stored statistics for other players", "stats");
         this.main = main;
     }
 
@@ -72,6 +69,12 @@ public class StalkerCommandHandler extends CommandHandler {
     public void run(String cmd, List<String> args, CommandOutputPrinter printer) throws UsageException {
         if (args.isEmpty())
             throw new UsageException("Missing command argument");
+        if (cmd.equals("stats")) {
+            if (args.isEmpty())
+                throw new UsageException("Missing username argument");
+            executorService.submit(new LoadPlayerIdRunnable(Collections.singletonList("show"), args, printer));
+            return;
+        }
         switch (args.get(0)) {
             case "show":
                 if (args.size() < 2)
@@ -127,7 +130,7 @@ public class StalkerCommandHandler extends CommandHandler {
             switch (commands.get(0)) {
                 case "show":
                     for (String name : nameIdPairs.keySet()) {
-                        output.add(String.format("Stats for %s:", name));
+                        output.add(String.format("Stats for %s%s%s%s:", ChatColor.LIGHT_PURPLE, ChatColor.BOLD, name, ChatColor.RESET));
                         output.addAll(Storage.getPlayerStats(nameIdPairs.get(name)));
                     }
                     break;
@@ -138,7 +141,7 @@ public class StalkerCommandHandler extends CommandHandler {
                     }
                     break;
                 default:
-                    throw new IllegalArgumentException("invalid command: " + commands.get(0));
+                    throw new IllegalArgumentException("Invalid command: " + commands.get(0));
             }
             main.runOnMainThread(new Runnable() {
                 @Override
@@ -154,5 +157,6 @@ public class StalkerCommandHandler extends CommandHandler {
     public void printUsage(String cmd, CommandOutputPrinter printer) {
         printer.println(".%s show <username> [<username2>...]", cmd);
         printer.println(".%s delete all|<gamemode> <username> [<username2>...]", cmd);
+        printer.println(".stats <username> [<username2>...]", cmd);
     }
 }

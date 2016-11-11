@@ -3,6 +3,7 @@ package net.frozenbit.plugin5zig.cubecraft.stalker;
 import eu.the5zig.mod.The5zigAPI;
 import eu.the5zig.mod.server.GameMode;
 import eu.the5zig.mod.util.NetworkPlayerInfo;
+import eu.the5zig.util.minecraft.ChatColor;
 import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
 import net.frozenbit.plugin5zig.cubecraft.Main;
 import org.iq80.leveldb.DB;
@@ -133,11 +134,13 @@ public class Storage implements Closeable {
                 }
             }
             if (jsonPlayerStats != null) {
-                playerStats.add(String.format("    %s: %d kills, %d deaths", gamemode, jsonPlayerStats.getInt("kills"), jsonPlayerStats.getInt("deaths")));
+                playerStats.add(String.format("    %s%s%s%s: %d kills, %d deaths",
+                        ChatColor.GOLD, ChatColor.BOLD, gamemode, ChatColor.RESET,
+                        jsonPlayerStats.getInt("kills"), jsonPlayerStats.getInt("deaths")));
             }
         }
         if (playerStats.size() == 0)
-            playerStats.add("    No stats for this player");
+            playerStats.add(ChatColor.GRAY + "    No stats for this player" + ChatColor.RESET);
         return playerStats;
     }
 
