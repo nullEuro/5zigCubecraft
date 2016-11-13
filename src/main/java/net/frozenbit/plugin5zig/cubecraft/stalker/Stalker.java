@@ -5,10 +5,9 @@ import eu.the5zig.mod.server.GameMode;
 import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
 import net.frozenbit.plugin5zig.cubecraft.Main;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Stalker {
 
@@ -23,7 +22,7 @@ public class Stalker {
         this.gameMode = gameMode;
         storage = new Storage(gameMode);
         ownName = The5zigAPI.getAPI().getGameProfile().getName();
-        stalkedPlayerList = Collections.synchronizedList(new ArrayList<StalkedPlayer>());
+        stalkedPlayerList = new CopyOnWriteArrayList<>();
     }
 
     public void onKill(String victim, String killer) {
