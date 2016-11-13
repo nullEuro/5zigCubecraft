@@ -134,13 +134,13 @@ public class Main {
             The5zigAPI.getAPI().registerServerInstance(this, ServerInstance.class);
 
             The5zigAPI.getAPI().registerModuleItem(this, "snake", SnakeItem.class, Category.OTHER);
-            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftvoters", VoterListItem.class, Category.SERVER_GENERAL);
-            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftkit", KitItem.class, Category.SERVER_GENERAL);
-            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftchest", GameModifiersItem.class, Category.SERVER_GENERAL);
-            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftstalker", StalkerItem.class, Category.SERVER_GENERAL);
-            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftassassinationmoney", MoneyItem.class, Category.SERVER_GENERAL);
-            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftduelsopponent", OpponentItem.class, Category.SERVER_GENERAL);
-            The5zigAPI.getAPI().registerModuleItem(this, "cubecrafttowerdefencebanter", TowerBanterItem.class, Category.SERVER_GENERAL);
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftvoters", VoterListItem.class, "cubecraft");
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftkit", KitItem.class, "cubecraft");
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftchest", GameModifiersItem.class, "cubecraft");
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftstalker", StalkerItem.class, "cubecraft");
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftassassinationmoney", MoneyItem.class, "cubecraft");
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftduelsopponent", OpponentItem.class, "cubecraft");
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecrafttowerdefencebanter", TowerBanterItem.class, "cubecraft");
 
             leaveKey = The5zigAPI.getAPI().registerKeyBiding("Leave the current game", Keyboard.KEY_L, "Cubecraft");
             snakeKey = The5zigAPI.getAPI().registerKeyBiding("Toggle Snake", Keyboard.KEY_P, "Misc");

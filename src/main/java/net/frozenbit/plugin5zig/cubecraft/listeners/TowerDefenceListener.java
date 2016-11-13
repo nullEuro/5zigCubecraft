@@ -21,6 +21,9 @@ public class TowerDefenceListener extends AbstractCubeCraftGameListener<TowerDef
             return Integer.compare(o1.price, o2.price);
         }
     };
+    public static final String COIN_SCORE_NAME = "§6⛃§e Coins";
+    public static final String CASTLE_HEALTH_SCORE_NAME = "§c❤§d Castle Health";
+    public static final String EXP_SCORE_NAME = "§3✦§b EXP";
     private static final Pattern PRICE_PATTERN = Pattern.compile("Price: (\\d+) coins");
     private Map<String, TowerDefenceGameMode.Tower> towers;
     private long tickCount;
@@ -49,28 +52,19 @@ public class TowerDefenceListener extends AbstractCubeCraftGameListener<TowerDef
     public void onTick(TowerDefenceGameMode gameMode) {
         super.onTick(gameMode);
         tickCount++;
-        if (tickCount % 10 == 0) {
-            HashMap<Integer, String> lines = The5zigAPI.getAPI().getSideScoreboard().getLines();
-            boolean inGame = false;
-            for (Map.Entry<Integer, String> scoreboardEntry : lines.entrySet()) {
-                int score = scoreboardEntry.getKey();
-                String name = scoreboardEntry.getValue();
-                switch (ChatColor.stripColor(name)) {
-                    case "⛃ Coins":
-                        gameMode.setCoins(score);
-                        inGame = true;
-                        break;
-                    case "❤ Castle Health":
-                        gameMode.setCastleHealth(score);
-                        inGame = true;
-                        break;
-                    case "✦ EXP":
-                        gameMode.setExp(score);
-                        inGame = true;
-                        break;
-                }
+        if (tickCount % 5 == 0) {
+            HashMap<String, Integer> lines = The5zigAPI.getAPI().getSideScoreboard().getLines();
+            if (lines.containsKey(COIN_SCORE_NAME)) {
+                gameMode.setCoins(lines.get(COIN_SCORE_NAME));
             }
-            if (gameMode.getState() == GameState.LOBBY && inGame) {
+            if (lines.containsKey(CASTLE_HEALTH_SCORE_NAME)) {
+                gameMode.setCastleHealth(lines.get(CASTLE_HEALTH_SCORE_NAME));
+            }
+            if (lines.containsKey(EXP_SCORE_NAME)) {
+                gameMode.setExp(lines.get(EXP_SCORE_NAME));
+            }
+
+            if (gameMode.getState() == GameState.LOBBY && !lines.containsKey("§5Map:")) {
                 long startTime = gameMode.getTime();
                 gameMode.setState(GameState.GAME);
                 gameMode.setTime(startTime);
