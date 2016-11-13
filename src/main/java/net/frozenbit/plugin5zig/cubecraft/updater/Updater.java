@@ -5,6 +5,7 @@ import com.google.gson.JsonParseException;
 import eu.the5zig.mod.The5zigAPI;
 import net.frozenbit.plugin5zig.cubecraft.Build;
 import net.frozenbit.plugin5zig.cubecraft.Main;
+import net.frozenbit.plugin5zig.cubecraft.Version;
 import net.frozenbit.plugin5zig.cubecraft.updater.models.PluginInfo;
 import net.frozenbit.plugin5zig.cubecraft.updater.models.Release;
 import org.apache.commons.lang3.SystemUtils;
@@ -27,8 +28,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
 import static java.lang.String.format;
@@ -36,11 +35,8 @@ import static java.lang.String.format;
 public class Updater {
     private static final String LATEST_RELEASE_URL =
             "https://api.github.com/repos/nullEuro/5zigCubecraft/releases/latest";
-    private static final Pattern VERSION_PATTERN =
-            Pattern.compile("^v(\\d+)\\.(\\d+)\\.(\\d+)$");
     private static final String MAIN_CLASS_NAME = "net.frozenbit.plugin5zig.cubecraft.Main";
     private static final String PLUGIN_DIRECTORY = "./the5zigmod/plugins";
-    private static final String JAR_NAME = "5zigCubecraft.jar";
     private CloseableHttpClient client;
     private Thread updateThread;
     private Main main;
@@ -188,19 +184,12 @@ public class Updater {
 
     private boolean isNewVersion(Release release) {
         String tagName = release.getTagName();
-        Matcher matcher = VERSION_PATTERN.matcher(tagName);
-        if (!matcher.matches()) {
+        try {
+            return Build.version.compareTo(Version.fromString(tagName)) < 0;
+        } catch (IllegalArgumentException e) {
             The5zigAPI.getLogger().warn("Invalid release tag name: '%s'", tagName);
             return false;
         }
-
-        int major = Integer.parseInt(matcher.group(1)),
-                minor = Integer.parseInt(matcher.group(2)),
-                patch = Integer.parseInt(matcher.group(3));
-
-        return major > Build.major
-               || (major == Build.major && minor > Build.minor)
-               || (major == Build.major && minor == Build.minor && patch > Build.patch);
     }
 
     private File downloadJar(Release.Asset jarAsset) {

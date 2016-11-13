@@ -31,8 +31,9 @@ task generateSources {
         srcFile.write("""
             package net.frozenbit.plugin5zig.cubecraft;
             public class Build {
+                public static final Version version = new Version($major, $minor, $patch);
                 public static final int major = $major, minor = $minor, patch = $patch;
-                public static final String version = "$project.version";
+                public static final String versionStr = "$project.version";
             }
             """)
     }

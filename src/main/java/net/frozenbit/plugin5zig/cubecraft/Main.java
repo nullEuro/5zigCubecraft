@@ -5,13 +5,11 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import eu.the5zig.mod.The5zigAPI;
-import eu.the5zig.mod.event.EventHandler;
-import eu.the5zig.mod.event.LoadEvent;
-import eu.the5zig.mod.event.TickEvent;
-import eu.the5zig.mod.event.UnloadEvent;
+import eu.the5zig.mod.event.*;
 import eu.the5zig.mod.modules.Category;
 import eu.the5zig.mod.plugin.Plugin;
 import eu.the5zig.mod.util.IKeybinding;
+import eu.the5zig.util.minecraft.ChatColor;
 import net.frozenbit.plugin5zig.cubecraft.commands.CommandRegistry;
 import net.frozenbit.plugin5zig.cubecraft.commands.handlers.ColorCommandHandler;
 import net.frozenbit.plugin5zig.cubecraft.commands.handlers.bancheck.BanCheckCommandHandler;
@@ -27,12 +25,15 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
-@Plugin(name = "5zigCubecraft", version = Build.version)
+@Plugin(name = "5zigCubecraft", version = Build.versionStr)
 public class Main {
     public static final Path PLUGIN_PATH = Paths.get("the5zigmod/plugins/5zigCubecraft/");
+    public static final Version MIN_5ZIG_VERSION = new Version(3, 9, 10);
     private static final String LOG_FILE = "cubecraft_5ziglog.txt";
     private static final File CONFIG_FILE = PLUGIN_PATH.resolve("config.json").toFile();
     private static Main instance;
+
+    private boolean pluginEnabled;
 
     private IKeybinding leaveKey, snakeKey;
     private boolean snake;
@@ -42,6 +43,10 @@ public class Main {
     private Updater updater;
     private PluginConfig config;
     private CommandRegistry commandRegistry;
+
+    public static boolean isEnabled() {
+        return instance != null && instance.pluginEnabled;
+    }
 
     public static Main getInstance() {
         return instance;
@@ -103,30 +108,42 @@ public class Main {
         logger = createLogger();
         config = readPluginConfig();
 
-        commandRegistry = new CommandRegistry()
-                .register(new BanCheckCommandHandler(this))
-                .register(new ColorCommandHandler())
-                .register(new StalkerCommandHandler(this));
-
-        The5zigAPI.getAPI().getPluginManager().registerListener(this, commandRegistry);
-
-        The5zigAPI.getAPI().registerServerInstance(this, ServerInstance.class);
-
-        The5zigAPI.getAPI().registerModuleItem(this, "snake", SnakeItem.class, Category.OTHER);
-        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftvoters", VoterListItem.class, Category.SERVER_GENERAL);
-        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftkit", KitItem.class, Category.SERVER_GENERAL);
-        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftchest", GameModifiersItem.class, Category.SERVER_GENERAL);
-        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftstalker", StalkerItem.class, Category.SERVER_GENERAL);
-        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftassassinationmoney", MoneyItem.class, Category.SERVER_GENERAL);
-        The5zigAPI.getAPI().registerModuleItem(this, "cubecraftduelsopponent", OpponentItem.class, Category.SERVER_GENERAL);
-        The5zigAPI.getAPI().registerModuleItem(this, "cubecrafttowerdefencebanter", TowerBanterItem.class, Category.SERVER_GENERAL);
-
-        leaveKey = The5zigAPI.getAPI().registerKeyBiding("Leave the current game", Keyboard.KEY_L, "Cubecraft");
-        snakeKey = The5zigAPI.getAPI().registerKeyBiding("Toggle Snake", Keyboard.KEY_P, "Misc");
-
         if (config.hasAutoUpdatesEnabled()) {
             updater = new Updater(this);
             updater.start();
+        }
+
+        Version modVersion = Version.fromString(The5zigAPI.getAPI().getModVersion());
+        if (modVersion.compareTo(MIN_5ZIG_VERSION) < 0) {
+            The5zigAPI.getLogger().warn("5zig Version too low! (required at least: {}, installed: {}). " +
+                                        "CubeCraft plugin will be disabled",
+                    MIN_5ZIG_VERSION, modVersion);
+            pluginEnabled = false;
+        } else {
+            pluginEnabled = true;
+        }
+
+        if (pluginEnabled) {
+            commandRegistry = new CommandRegistry()
+                    .register(new BanCheckCommandHandler(this))
+                    .register(new ColorCommandHandler())
+                    .register(new StalkerCommandHandler(this));
+
+            The5zigAPI.getAPI().getPluginManager().registerListener(this, commandRegistry);
+
+            The5zigAPI.getAPI().registerServerInstance(this, ServerInstance.class);
+
+            The5zigAPI.getAPI().registerModuleItem(this, "snake", SnakeItem.class, Category.OTHER);
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftvoters", VoterListItem.class, Category.SERVER_GENERAL);
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftkit", KitItem.class, Category.SERVER_GENERAL);
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftchest", GameModifiersItem.class, Category.SERVER_GENERAL);
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftstalker", StalkerItem.class, Category.SERVER_GENERAL);
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftassassinationmoney", MoneyItem.class, Category.SERVER_GENERAL);
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecraftduelsopponent", OpponentItem.class, Category.SERVER_GENERAL);
+            The5zigAPI.getAPI().registerModuleItem(this, "cubecrafttowerdefencebanter", TowerBanterItem.class, Category.SERVER_GENERAL);
+
+            leaveKey = The5zigAPI.getAPI().registerKeyBiding("Leave the current game", Keyboard.KEY_L, "Cubecraft");
+            snakeKey = The5zigAPI.getAPI().registerKeyBiding("Toggle Snake", Keyboard.KEY_P, "Misc");
         }
 
         // copy the old skywars database - REMOVE THIS SOME TIME IN THE FUTURE!
@@ -156,7 +173,21 @@ public class Main {
     }
 
     @EventHandler
+    public void onJoin(ServerJoinEvent event) {
+        if (!pluginEnabled && ServerInstance.isCubeCraft(event.getHost())) {
+            The5zigAPI.getAPI().messagePlayer(ChatColor.RED + (ChatColor.BOLD + "Your 5zig version is outdated"));
+            The5zigAPI.getAPI().messagePlayer(ChatColor.RED + "The CubeCraft plugin is not compatible with older \n" +
+                                              "versions and will be disabled.\n" +
+                                              "Download the newest 5zig version here:\n" +
+                                              "http://5zig.net/downloads");
+        }
+    }
+
+    @EventHandler
     public void onTick(TickEvent event) {
+        if (!pluginEnabled) {
+            return;
+        }
         checkKeyBindings();
         Runnable task = tasks.poll();
         if (task != null) {
