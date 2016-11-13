@@ -7,17 +7,15 @@ This is not an official plugin and I am not affiliated with Cubecraft or 5zig.
 
 ## Features
 
-|Item     |SkyWars|Survival Games|EggWars|Duels|Assassination|
-|---------|:-----:|:------------:|:-----:|:---:|:-----------:|
-|Voters   |✓      |✓             |✓      |✗    |✗            |
-|Modifiers|✓      |✓             |✓      |✗    |✗            |
-|Kit      |✓      |✓             |✓      |✗    |✗            |
-|Stalker  |✓      |✓             |✓      |✓    |✗            |
-|Countdown|✓      |✓             |✓      |✓    |✗            |
-|Summary  |✓      |✓             |✓      |✓    |✗            |
-|LeaveKey |✓      |✓             |✓      |✓    |✓            |
-|Money    |✗      |✗             |✗      |✗    |✓            |
-|Opponent |✗      |✗             |✗      |✓    |✗            |
+|Item     |SkyWars|Survival Games|EggWars|Duels|Assassination|Tower Defence|
+|---------|:-----:|:------------:|:-----:|:---:|:-----------:|:-----------:|
+|Voters   |✓      |✓             |✓      |✗    |✗            |✗            |
+|Modifiers|✓      |✓             |✓      |✗    |✗            |✗            |
+|Kit      |✓      |✓             |✓      |✗    |✗            |✗            |
+|Stalker  |✓      |✓             |✓      |✓    |✗            |✗            |
+|Countdown|✓      |✓             |✓      |✓    |✗            |✓            |
+|Summary  |✓      |✓             |✓      |✓    |✗            |✗            |
+|LeaveKey |✓      |✓             |✓      |✓    |✓            |✓            |
 
 ### Voters
 
@@ -71,12 +69,33 @@ Shows how much money you have in your inventory.
 
 Shows your opponents name, his ping and the number of previous kills/deaths against this player.
 
+### Tower Prices
+
+![Tower Prices](https://i.imgur.com/yBy2Bes.png)
+
+Shows a list of available towers, their prices and whether you have enough coins.
+
 ### Commands
 
 The plugin now supports commands. Type `.help` in the chat to get a list of commands or `.help <command>` to get help for a specified command.
 
 #### .bans
+
 ![.bans command](http://i.imgur.com/fZjemMw.png)
+
+#### .color
+
+![.color command](https://i.imgur.com/ojZidOz.png)
+
+#### .stalker
+
+![.stalker command](https://i.imgur.com/z1bnP9B.png)
+
+#### .r
+
+![.r command](https://i.imgur.com/tGMG278.png)
+
+Responds to the latest /msg or /fmsg you received.
 
 ### Upcoming
 
@@ -86,7 +105,7 @@ The plugin now supports commands. Type `.help` in the chat to get a list of comm
 
 Install the [current version of 5zig](http://5zig.net/downloads).
 
-Download the [latest release of 5zigCubecraft](https://github.com/nullEuro/5zigCubecraft/releases) and place the .jar file in your `.minecraft/the5zigmod/plugins` folder.
+Download the [latest release of 5zigCubecraft](https://github.com/nullEuro/5zigCubecraft/releases/latest) and place the .jar file in your `.minecraft/the5zigmod/plugins` folder.
 
 To activate the items click on Options -> The 5zig Mod... -> Customize Display and select the module you want to add the items to or crate a new module.
 Then click on Settings -> Items -> Add new Item... and select the items you want do add (our items are in the category Server General).
