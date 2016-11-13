@@ -1,8 +1,11 @@
 package net.frozenbit.plugin5zig.cubecraft.commands.stalker;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import eu.the5zig.mod.The5zigAPI;
 import eu.the5zig.util.minecraft.ChatColor;
 import net.frozenbit.plugin5zig.cubecraft.Main;
+import net.frozenbit.plugin5zig.cubecraft.Util;
 import net.frozenbit.plugin5zig.cubecraft.commands.CommandHandler;
 import net.frozenbit.plugin5zig.cubecraft.commands.CommandOutputPrinter;
 import net.frozenbit.plugin5zig.cubecraft.commands.UsageException;
@@ -11,30 +14,21 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.json.JSONArray;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class StalkerCommandHandler extends CommandHandler {
-    private static URI MOJANG_API;
+    private static final URI MOJANG_API = URI.create("https://api.mojang.com/profiles/minecraft");
 
     private final Main main;
     private ExecutorService executorService;
     private CloseableHttpClient client;
 
-    static {
-        try {
-            MOJANG_API = new URI("https://api.mojang.com/profiles/minecraft");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public StalkerCommandHandler(Main main) {
         super("stalker", "Manage stored statistics for other players", "stats");
@@ -79,7 +73,7 @@ public class StalkerCommandHandler extends CommandHandler {
             case "show":
                 if (args.size() < 2)
                     throw new UsageException("Missing username argument");
-                executorService.submit(new LoadPlayerIdRunnable(args.subList(0, 1), args.subList(1, args.size()), printer));
+                executorService.submit(new Util.LoggingRunnable(new LoadPlayerIdRunnable(args.subList(0, 1), args.subList(1, args.size()), printer)));
                 break;
             case "delete":
                 if (args.size() < 2)
@@ -91,6 +85,13 @@ public class StalkerCommandHandler extends CommandHandler {
             default:
                 throw new UsageException(String.format("Invalid command: %s", args.get(0)));
         }
+    }
+
+    @Override
+    public void printUsage(String cmd, CommandOutputPrinter printer) {
+        printer.println(".%s show <username> [<username2>...]", cmd);
+        printer.println(".%s delete all|<gamemode> <username> [<username2>...]", cmd);
+        printer.println(".stats <username> [<username2>...]", cmd);
     }
 
     private class LoadPlayerIdRunnable implements Runnable {
@@ -106,15 +107,19 @@ public class StalkerCommandHandler extends CommandHandler {
 
         @Override
         public void run() {
-            JSONArray jsonUsernames = new JSONArray(usernames);
             HttpPost request = new HttpPost(MOJANG_API);
             request.addHeader("Content-Type", "application/json");
-            HashMap<String, UUID> nameIdPairs;
+            HashMap<String, UserData> nameToUser = new HashMap<>();
             try {
-                request.setEntity(new StringEntity(jsonUsernames.toString()));
-                nameIdPairs = client.execute(request, new MojangResponseHandler());
+                request.setEntity(new StringEntity(new Gson().toJson(usernames,
+                        new TypeToken<Collection<String>>() {
+                        }.getType())));
+                List<UserData> users = client.execute(request, new MojangResponseHandler());
+                for (UserData user : users) {
+                    nameToUser.put(user.name.toLowerCase(), user);
+                }
             } catch (final IOException e) {
-                The5zigAPI.getLogger().error("Cannot query uuid list", e);
+                The5zigAPI.getLogger().error("Cannot query id list", e);
                 main.runOnMainThread(new Runnable() {
                     @Override
                     public void run() {
@@ -125,19 +130,19 @@ public class StalkerCommandHandler extends CommandHandler {
             }
             final List<String> output = new ArrayList<>();
             for (String name : usernames)
-                if (!nameIdPairs.containsKey(name))
+                if (!nameToUser.containsKey(name.toLowerCase()))
                     output.add(ChatColor.RED + String.format("Player not found: %s", name));
             switch (commands.get(0)) {
                 case "show":
-                    for (String name : nameIdPairs.keySet()) {
-                        output.add(String.format("Stats for %s%s%s%s:", ChatColor.LIGHT_PURPLE, ChatColor.BOLD, name, ChatColor.RESET));
-                        output.addAll(Storage.getPlayerStats(nameIdPairs.get(name)));
+                    for (UserData user : nameToUser.values()) {
+                        output.add(playerStatsHeader(user));
+                        output.addAll(Storage.getPlayerStats(user.id));
                     }
                     break;
                 case "delete":
-                    for (String name : nameIdPairs.keySet()) {
-                        output.add(String.format("Stats for %s:", name));
-                        output.addAll(Storage.deletePlayerStats(nameIdPairs.get(name), commands.get(1)));
+                    for (UserData user : nameToUser.values()) {
+                        output.add(playerStatsHeader(user));
+                        output.addAll(Storage.deletePlayerStats(user.id, commands.get(1)));
                     }
                     break;
                 default:
@@ -151,12 +156,10 @@ public class StalkerCommandHandler extends CommandHandler {
                 }
             });
         }
-    }
 
-    @Override
-    public void printUsage(String cmd, CommandOutputPrinter printer) {
-        printer.println(".%s show <username> [<username2>...]", cmd);
-        printer.println(".%s delete all|<gamemode> <username> [<username2>...]", cmd);
-        printer.println(".stats <username> [<username2>...]", cmd);
+        private String playerStatsHeader(UserData user) {
+            return String.format("Stats for %s%s%s%s:", ChatColor.LIGHT_PURPLE, ChatColor.BOLD,
+                    user.name, ChatColor.RESET);
+        }
     }
 }
