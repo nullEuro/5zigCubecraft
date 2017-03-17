@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 // note: if you refactor this class, the gradle task generateSources might break
 public class Version implements Comparable<Version> {
     private static final Pattern VERSION_PATTERN =
-            Pattern.compile("^v?(\\d+)\\.(\\d+)\\.(\\d+)$");
+            Pattern.compile("^v?(\\d+)(\\.(\\d+))?(\\.(\\d+))?$");
     public final int major;
     public final int minor;
     public final int patch;
@@ -27,8 +27,8 @@ public class Version implements Comparable<Version> {
         }
 
         int major = Integer.parseInt(matcher.group(1)),
-                minor = Integer.parseInt(matcher.group(2)),
-                patch = Integer.parseInt(matcher.group(3));
+                minor = matcher.group(3) == null ? 0 : Integer.parseInt(matcher.group(3)),
+                patch = matcher.group(5) == null ? 0 : Integer.parseInt(matcher.group(5));
         return new Version(major, minor, patch);
     }
 

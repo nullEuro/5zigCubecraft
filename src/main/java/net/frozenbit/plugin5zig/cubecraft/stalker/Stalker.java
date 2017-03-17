@@ -48,7 +48,13 @@ public class Stalker {
             otherPlayer.onKill();
         else
             otherPlayer.onDeath();
-        storage.storePlayer(otherPlayer);
+        final StalkedPlayer storedPlayer = otherPlayer;
+        new Thread() {
+            @Override
+            public void run() {
+                storage.storePlayer(storedPlayer);
+            }
+        }.start();
     }
 
     public void onPlayerListUpdate(final List<CubeCraftPlayer> playerList) {
