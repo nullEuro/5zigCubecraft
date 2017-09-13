@@ -45,8 +45,8 @@ compileJava.source generateSources.outputs.files, sourceSets.main.java
 
 allprojects {
     tasks.withType(JavaCompile) {
-        sourceCompatibility = '1.7'
-        targetCompatibility = '1.7'
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 }
 
@@ -74,17 +74,17 @@ if (OperatingSystem.current().isMacOsX()) {
 def minecraftLibraries = fileTree(dir: "$minecraftFolder/libraries", include: '**/*.jar')
 
 dependencies {
-    compile 'org.json:json:20160810'
+    compile 'org.json:json:20170516'
     compile 'org.iq80.leveldb:leveldb:0.9'
 
     // the following dependencies are provided at runtime by minecraft
-    compileOnly 'org.apache.httpcomponents:httpclient:4.3.3'
-    compileOnly 'com.google.code.gson:gson:2.2.4'
-    compileOnly 'org.apache.logging.log4j:log4j-api:2.0-rc2'
-    compileOnly 'com.google.guava:guava:17.0'
-    compileOnly 'org.lwjgl.lwjgl:lwjgl:2.9.1'
-    compileOnly 'org.apache.commons:commons-lang3:3.3.2'
-    compileOnly minecraftLibraries.matching { include '**/authlib-1.5.22.jar' }
+    compileOnly 'org.apache.httpcomponents:httpclient:4.5.3'
+    compileOnly 'com.google.code.gson:gson:2.8.1'
+    compileOnly 'org.apache.logging.log4j:log4j-api:2.9.0'
+    compileOnly 'com.google.guava:guava:23.0'
+    compileOnly 'org.lwjgl.lwjgl:lwjgl:2.9.3'
+    compileOnly 'org.apache.commons:commons-lang3:3.6'
+    compileOnly minecraftLibraries.matching { include '**/authlib-1.5.25.jar' }
     compileOnly fileTree(dir: 'libs', include: 'The-5zig-API-*.jar')
 
     testCompile 'junit:junit:4.12'
