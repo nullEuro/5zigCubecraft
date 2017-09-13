@@ -5,9 +5,9 @@ import eu.the5zig.mod.server.GameMode;
 import net.frozenbit.plugin5zig.cubecraft.CubeCraftPlayer;
 import net.frozenbit.plugin5zig.cubecraft.Main;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Stalker {
 
@@ -22,7 +22,7 @@ public class Stalker {
         this.gameMode = gameMode;
         storage = new Storage(gameMode);
         ownName = The5zigAPI.getAPI().getGameProfile().getName();
-        stalkedPlayerList = new CopyOnWriteArrayList<>();
+        stalkedPlayerList = new ArrayList<>();
     }
 
     public void onKill(String victim, String killer) {
@@ -64,12 +64,14 @@ public class Stalker {
         new Thread() {
             @Override
             public void run() {
-                for (CubeCraftPlayer cubeCraftPlayer : playerList) {
-                    maxNameWidth = Math.max(maxNameWidth, The5zigAPI.getAPI().getRenderHelper().getStringWidth(cubeCraftPlayer.getName()));
-                    StalkedPlayer stalkedPlayer = storage.getStalkedPlayer(cubeCraftPlayer);
-                    if (stalkedPlayer.getKills() != 0 || stalkedPlayer.getDeaths() != 0)
-                        ++shownPlayerCount;
-                    stalkedPlayerList.add(stalkedPlayer);
+                synchronized (stalkedPlayerList) {
+                    for (CubeCraftPlayer cubeCraftPlayer : playerList) {
+                        maxNameWidth = Math.max(maxNameWidth, The5zigAPI.getAPI().getRenderHelper().getStringWidth(cubeCraftPlayer.getName()));
+                        StalkedPlayer stalkedPlayer = storage.getStalkedPlayer(cubeCraftPlayer);
+                        if (stalkedPlayer.getKills() != 0 || stalkedPlayer.getDeaths() != 0)
+                            ++shownPlayerCount;
+                        stalkedPlayerList.add(stalkedPlayer);
+                    }
                 }
             }
         }.start();
@@ -80,9 +82,11 @@ public class Stalker {
     }
 
     public StalkedPlayer getStalkedPlayerById(UUID id) {
-        for (StalkedPlayer stalkedPlayer : stalkedPlayerList) {
-            if (stalkedPlayer.getId().equals(id)) {
-                return stalkedPlayer;
+        synchronized (stalkedPlayerList) {
+            for (StalkedPlayer stalkedPlayer : stalkedPlayerList) {
+                if (stalkedPlayer.getId().equals(id)) {
+                    return stalkedPlayer;
+                }
             }
         }
         return null;

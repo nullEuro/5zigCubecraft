@@ -35,7 +35,7 @@ public class GameListener extends AbstractGameListener<GameMode> {
             return;
         }
         if (key.equals("generic.join")) {
-            countdown = 10;
+            countdown = 20;
         } else if (key.startsWith("message.receive")) {
             RespondCommandHandler.MessageType messageType = RespondCommandHandler.MessageType.valueOf(
                     Iterables.getLast(Splitter.on('.').splitToList(key)).toUpperCase());
