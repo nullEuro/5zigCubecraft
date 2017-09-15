@@ -5,7 +5,7 @@ import net.frozenbit.plugin5zig.cubecraft.listeners.*;
 
 public class ServerInstance extends eu.the5zig.mod.server.ServerInstance {
     public static boolean isCubeCraft(String host) {
-        return host.equals("play.cubecraftgames.net") || host.equals("play.cubecraft.net");
+        return host.endsWith(".cubecraftgames.net") || host.endsWith(".cubecraft.net");
     }
 
     @Override
