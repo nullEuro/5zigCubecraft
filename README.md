@@ -69,12 +69,6 @@ Shows how much money you have in your inventory.
 
 Shows your opponents name, his ping and the number of previous kills/deaths against this player.
 
-### Tower Prices
-
-![Tower Prices](https://i.imgur.com/yBy2Bes.png)
-
-Shows a list of available towers, their prices and whether you have enough coins.
-
 ### Commands
 
 The plugin now supports commands. Type `.help` in the chat to get a list of commands or `.help <command>` to get help for a specified command.
