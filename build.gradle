@@ -3,7 +3,7 @@ import org.gradle.internal.os.OperatingSystem;
 apply plugin: 'java'
 apply plugin: 'idea'
 
-def major = 1, minor = 4, patch = 4;
+def major = 1, minor = 4, patch = 5
 
 version = "$major.$minor.$patch"
 
@@ -60,30 +60,30 @@ repositories {
     jcenter()
 }
 
-def minecraftFolder;
+def minecraftFolder
 if (OperatingSystem.current().isMacOsX()) {
-    minecraftFolder = "${System.properties['user.home']}/Library/Application Support/minecraft";
+    minecraftFolder = "${System.properties['user.home']}/Library/Application Support/minecraft"
 } else if (OperatingSystem.current().isLinux()) {
-    minecraftFolder = "${System.properties['user.home']}/.minecraft";
+    minecraftFolder = "${System.properties['user.home']}/.minecraft"
 } else if (OperatingSystem.current().isWindows()) {
-    minecraftFolder = "$System.env.APPDATA/.minecraft";
+    minecraftFolder = "$System.env.APPDATA/.minecraft"
 } else {
-    throw new FileNotFoundException("No minecraft folder detected");
+    throw new FileNotFoundException("No minecraft folder detected")
 }
 
 def minecraftLibraries = fileTree(dir: "$minecraftFolder/libraries", include: '**/*.jar')
 
 dependencies {
-    compile 'org.json:json:20170516'
+    compile 'org.json:json:20171018'
     compile 'org.iq80.leveldb:leveldb:0.9'
 
     // the following dependencies are provided at runtime by minecraft
     compileOnly 'org.apache.httpcomponents:httpclient:4.5.3'
-    compileOnly 'com.google.code.gson:gson:2.8.1'
-    compileOnly 'org.apache.logging.log4j:log4j-api:2.9.0'
-    compileOnly 'com.google.guava:guava:23.0'
+    compileOnly 'com.google.code.gson:gson:2.8.2'
+    compileOnly 'org.apache.logging.log4j:log4j-api:2.9.1'
+    compileOnly 'com.google.guava:guava:23.4-jre'
     compileOnly 'org.lwjgl.lwjgl:lwjgl:2.9.3'
-    compileOnly 'org.apache.commons:commons-lang3:3.6'
+    compileOnly 'org.apache.commons:commons-lang3:3.7'
     compileOnly minecraftLibraries.matching { include '**/authlib-1.5.25.jar' }
     compileOnly fileTree(dir: 'libs', include: 'The-5zig-API-*.jar')
 

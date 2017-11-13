@@ -33,7 +33,7 @@ public class StalkerItem extends GameModeItem<CubeCraftGameMode> {
             return;
         drawHeader(x, y);
         int lineNumber = 1;
-        synchronized (stalkedPlayers) {
+        synchronized (getGameMode().getStalker().getStalkedPlayerList()) {
             for (StalkedPlayer player : stalkedPlayers) {
                 if (player.getKills() == 0 && player.getDeaths() == 0)
                     continue;

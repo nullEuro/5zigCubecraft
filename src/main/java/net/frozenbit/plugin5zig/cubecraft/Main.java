@@ -140,36 +140,13 @@ public class Main {
             The5zigAPI.getAPI().registerModuleItem(this, "cubecraftstalker", StalkerItem.class, "cubecraft");
             The5zigAPI.getAPI().registerModuleItem(this, "cubecraftassassinationmoney", MoneyItem.class, "cubecraft");
             The5zigAPI.getAPI().registerModuleItem(this, "cubecraftduelsopponent", OpponentItem.class, "cubecraft");
-            The5zigAPI.getAPI().registerModuleItem(this, "cubecrafttowerdefencebanter", TowerBanterItem.class, "cubecraft");
+            //The5zigAPI.getAPI().registerModuleItem(this, "cubecrafttowerdefencebanter", TowerBanterItem.class, "cubecraft");
 
             leaveKey = The5zigAPI.getAPI().registerKeyBiding("Leave the current game", Keyboard.KEY_L, "Cubecraft");
             snakeKey = The5zigAPI.getAPI().registerKeyBiding("Toggle Snake", Keyboard.KEY_P, "Misc");
         }
 
-        // copy the old skywars database - REMOVE THIS SOME TIME IN THE FUTURE!
-        migrateSkywarsDb();
-
         instance = this;
-    }
-
-    private void migrateSkywarsDb() {
-        File source = new File("stalker.db");
-        File target = PLUGIN_PATH.resolve("stalker/Skywars.db").toFile();
-        if (source.isDirectory() && !target.isDirectory()) {
-            File[] db_files = source.listFiles();
-            if (db_files == null) {
-                getLogger().println("old skywars stalker.db exists but can not be read");
-                return;
-            }
-            try {
-                java.nio.file.Files.createDirectories(target.toPath());
-                for (File file : db_files) {
-                    Files.copy(file, new File(target, file.getName()));
-                }
-            } catch (IOException e) {
-                getLogger().println(e);
-            }
-        }
     }
 
     @EventHandler

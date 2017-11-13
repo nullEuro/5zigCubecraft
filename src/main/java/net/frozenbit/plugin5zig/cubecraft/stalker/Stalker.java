@@ -15,7 +15,7 @@ public class Stalker {
     private String ownName;
     private GameMode gameMode;
     private final List<StalkedPlayer> stalkedPlayerList;
-    private final List<StalkedPlayer> provisionalStalkedPlayerList;
+    private final List<StalkedPlayer> internalStalkedPlayerList;
     private int maxNameWidth = 0;
     private int shownPlayerCount = 0;
     private int playerListIteration = 0;
@@ -25,7 +25,7 @@ public class Stalker {
         storage = new Storage(gameMode);
         ownName = The5zigAPI.getAPI().getGameProfile().getName();
         stalkedPlayerList = new ArrayList<>();
-        provisionalStalkedPlayerList = new ArrayList<>();
+        internalStalkedPlayerList = new ArrayList<>();
     }
 
     public void onKill(String victim, String killer) {
@@ -62,8 +62,8 @@ public class Stalker {
         final int frozenPlayerListIteration = ++playerListIteration;
         shownPlayerCount = 0;
         new Thread(() -> {
-            provisionalStalkedPlayerList.clear();
-            synchronized (provisionalStalkedPlayerList) {
+            synchronized (internalStalkedPlayerList) {
+                internalStalkedPlayerList.clear();
                 for (CubeCraftPlayer cubeCraftPlayer : playerList) {
                     if (playerListIteration != frozenPlayerListIteration)
                         return;
@@ -71,10 +71,13 @@ public class Stalker {
                     StalkedPlayer stalkedPlayer = storage.getStalkedPlayer(cubeCraftPlayer);
                     if (stalkedPlayer.getKills() != 0 || stalkedPlayer.getDeaths() != 0)
                         ++shownPlayerCount;
-                    provisionalStalkedPlayerList.add(stalkedPlayer);
+                    internalStalkedPlayerList.add(stalkedPlayer);
                 }
+                if (playerListIteration != frozenPlayerListIteration)
+                    return;
                 synchronized (stalkedPlayerList) {
-                    stalkedPlayerList.addAll(provisionalStalkedPlayerList);
+                    stalkedPlayerList.clear();
+                    stalkedPlayerList.addAll(internalStalkedPlayerList);
                 }
             }
         }).start();
